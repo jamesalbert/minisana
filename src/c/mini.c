@@ -159,5 +159,7 @@ int main(int argc, char * argv[]) {
   }
   printf("\nfound:\n");
   print_net(s);
+  free(s);
+  free(sol);
   exit(EXIT_SUCCESS);
 }
