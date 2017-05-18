@@ -6,15 +6,15 @@ Vagrant.configure("2") do |config|
   host = RbConfig::CONFIG['host_os']
   # Give VM 1/4 system memory & access to all cpu cores on the host
   if host =~ /darwin/
-    cpus = `sysctl -n hw.ncpu`.to_i
+    cpus = `sysctl -n hw.ncpu`.to_i / 2
     # sysctl returns Bytes and we need to convert to MB
     mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
   elsif host =~ /linux/
-    cpus = `nproc`.to_i
+    cpus = `nproc`.to_i / 2
     # meminfo shows KB and we need to convert to MB
     mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
   else
-    cpus = `wmic cpu get NumberOfCores`.split("\n")[2].to_i
+    cpus = `wmic cpu get NumberOfCores`.split("\n")[2].to_i / 2
     mem = `wmic OS get TotalVisibleMemorySize`.split("\n")[2].to_i / 1024 /4
   end
   config.vm.provider "virtualbox" do |v|

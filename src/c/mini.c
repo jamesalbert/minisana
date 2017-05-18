@@ -129,7 +129,7 @@ double edge_cover(struct Alignment * alignment, struct Alignment * solution) {
 }
 
 struct Alignment * get_best_neighbor(struct Alignment * alignment, struct Alignment * solution) {
-  struct Alignment ** neighbors = malloc(sizeof(struct Alignment *) * 10000);
+  struct Alignment ** neighbors = malloc(sizeof(struct Alignment *) * 10000000);
   struct Alignment * best_neighbor;
   int num_neighbors;
   double best_score = 0;
@@ -139,10 +139,16 @@ struct Alignment * get_best_neighbor(struct Alignment * alignment, struct Alignm
     if (score >= best_score) {
       best_score = score;
       best_neighbor = neighbors[i];
+    } else {
+      free(neighbors[i]->coords);
+      free(neighbors[i]->net.graph);
+      free(neighbors[i]);
     }
   }
+  struct Alignment * neighbor = malloc(sizeof(struct Alignment));
+  *neighbor = *best_neighbor;
   free(neighbors);
-  return best_neighbor;
+  return neighbor;
 }
 
 double probability(double es, double es_new, double t) {
@@ -227,17 +233,24 @@ int main(int argc, char * argv[]) {
     es = edge_cover(s, sol);
     es_new = edge_cover(s_new, sol);
     p = probability(es, es_new, t);
-    if (es_new - es >= 0)
+    if (es_new - es >= 0) {
+      free(s);
       s = s_new;
-    else {
+    } else {
       accept = (rand() % 100) < 1 - p;
-      if (accept)
+      if (accept) {
+        free(s);
         s = s_new;
+      }
+      else
+        free(s_new);
     }
   }
   printf("\nfound:\n");
   print_net(s->net);
   free(s);
+  free(s_coords);
   free(sol);
+  free(sol_coords);
   exit(EXIT_SUCCESS);
 }
