@@ -82,6 +82,16 @@ void create_alignment(struct Alignment * to, struct Alignment * from) {
   }
 }
 
+void destroy_alignment(struct Alignment * alignment) {
+  for (size_t i = 0; i < alignment->num_coords; i++)
+    free(alignment->coords[i]);
+  free(alignment->coords);
+  for (size_t i = 0; i < alignment->net.rows; i++)
+    free(alignment->net.graph[i]);
+  free(alignment->net.graph);
+  free(alignment);
+}
+
 struct Alignment * swap(struct Alignment * alignment, int n1, int n2) {
   struct Alignment * neighbor = malloc(sizeof(struct Alignment));
   create_alignment(neighbor, alignment);
@@ -104,20 +114,6 @@ struct Alignment * move(struct Alignment * alignment, int node, int c1, int c2) 
   return neighbor;
 }
 
-void get_neighbors(struct Alignment * alignment, struct Alignment ** neighbors, int * num_neighbors) {
-  int i, j, k;
-  *num_neighbors = 0;
-  for (i = 0; i < alignment->num_coords; i++)
-    for (j = 0; j < alignment->num_coords; j++)
-      if (i != j)
-        neighbors[(*num_neighbors)++] = swap(alignment, i, j);
-  for (i = 0; i < alignment->num_coords; i++)
-    for (j = 0; j < network.rows; j++)
-      for (k = 0; k < network.cols; k++)
-        if (alignment->net.graph[j][k] == 0)
-          neighbors[(*num_neighbors)++] = move(alignment, i, j, k);
-}
-
 double edge_cover(struct Alignment * alignment, struct Alignment * solution) {
   double passed = 0.0;
   for (size_t i = 0; i < alignment->num_coords; i++)
@@ -128,27 +124,42 @@ double edge_cover(struct Alignment * alignment, struct Alignment * solution) {
   return passed / (double)solution->num_coords;
 }
 
+struct Alignment * get_neighbors(struct Alignment * alignment, struct Alignment * solution) {
+  int i, j, k;
+  double best_score_yet = 0.0;
+  struct Alignment * best_neighbor = malloc(sizeof(struct Alignment));
+  for (i = 0; i < alignment->num_coords; i++)
+    for (j = 0; j < alignment->num_coords; j++)
+      if (i != j) {
+        struct Alignment * neighbor = swap(alignment, i, j);
+        double current_score = edge_cover(neighbor, solution);
+        if (current_score > best_score_yet) {
+          best_score_yet = current_score;
+          best_neighbor = neighbor;
+        } else {
+          destroy_alignment(neighbor);
+        }
+      }
+  for (i = 0; i < alignment->num_coords; i++)
+    for (j = 0; j < network.rows; j++)
+      for (k = 0; k < network.cols; k++)
+        if (alignment->net.graph[j][k] == 0) {
+          struct Alignment * neighbor = move(alignment, i, j, k);
+          double current_score = edge_cover(neighbor, solution);
+          if (current_score > best_score_yet) {
+            best_score_yet = current_score;
+            best_neighbor = neighbor;
+          } else {
+            destroy_alignment(neighbor);
+          }
+        }
+  return best_neighbor;
+}
+
 struct Alignment * get_best_neighbor(struct Alignment * alignment, struct Alignment * solution) {
-  struct Alignment ** neighbors = malloc(sizeof(struct Alignment *) * 10000000);
   struct Alignment * best_neighbor;
-  int num_neighbors;
-  double best_score = 0;
-  get_neighbors(alignment, neighbors, &num_neighbors);
-  for (size_t i = 0; i < num_neighbors; i++) {
-    double score = edge_cover(neighbors[i], solution);
-    if (score >= best_score) {
-      best_score = score;
-      best_neighbor = neighbors[i];
-    } else {
-      free(neighbors[i]->coords);
-      free(neighbors[i]->net.graph);
-      free(neighbors[i]);
-    }
-  }
-  struct Alignment * neighbor = malloc(sizeof(struct Alignment));
-  *neighbor = *best_neighbor;
-  free(neighbors);
-  return neighbor;
+  best_neighbor = get_neighbors(alignment, solution);
+  return best_neighbor;
 }
 
 double probability(double es, double es_new, double t) {
@@ -234,23 +245,21 @@ int main(int argc, char * argv[]) {
     es_new = edge_cover(s_new, sol);
     p = probability(es, es_new, t);
     if (es_new - es >= 0) {
-      free(s);
+      destroy_alignment(s);
       s = s_new;
     } else {
       accept = (rand() % 100) < 1 - p;
       if (accept) {
-        free(s);
+        destroy_alignment(s);
         s = s_new;
       }
       else
-        free(s_new);
+        destroy_alignment(s_new);
     }
   }
   printf("\nfound:\n");
   print_net(s->net);
-  free(s);
-  free(s_coords);
-  free(sol);
-  free(sol_coords);
+  destroy_alignment(s);
+  destroy_alignment(sol);
   exit(EXIT_SUCCESS);
 }
