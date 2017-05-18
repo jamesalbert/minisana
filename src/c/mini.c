@@ -8,37 +8,34 @@
 #include <term.h>
 
 
-struct Alignment {
-  int ** net;   // adjacency matrix representation of network
-  int ** coords; // coordinates of each node
-  int num_coords;  // number of coordinates
-};
-
 struct Network {
-  int ** net;
+  int ** graph;
   int rows;
   int cols;
-  int size;
 } network;
+
+struct Alignment {
+  struct Network net; // adjacency matrix representation of network
+  int ** coords;      // coordinates of each node
+  int num_coords;     // number of coordinates
+};
+
 
 void init_network(int rows, int cols) {
   network.rows = rows;
   network.cols = cols;
-  network.size = (rows * sizeof(int*)) * (cols * sizeof(int));
-  network.net = malloc(rows * sizeof(int*));
+  network.graph = malloc(rows * sizeof(int*));
   for (int i = 0; i < rows; i++) {
-    network.net[i] = malloc(cols * sizeof(int));
-    for (int j = 0; j < cols; j++) {
-      network.net[i][j] = 0;
-    }
+    network.graph[i] = malloc(cols * sizeof(int));
+    for (int j = 0; j < cols; j++)
+      network.graph[i][j] = 0;
   }
 }
 
-void print_net(int ** net, int rows, int cols) {
-  int i, j;
-  for (i = 0; i < rows; i++) {
-    for (j = 0; j < cols; j++)
-      printf("%d ", net[i][j]);
+void print_net(struct Network net) {
+  for (int i = 0; i < net.rows; i++) {
+    for (int j = 0; j < net.cols; j++)
+      printf("%d ", net.graph[i][j]);
     printf("\n");
   }
 }
@@ -50,60 +47,61 @@ void print_coords(int ** coords, int num_coords) {
   printf("\n}\n");
 }
 
-void generate_net(struct Alignment * alignment, int ** coords, int num_coords) {
-  alignment->net = malloc(network.rows * sizeof(int*));
-  alignment->net[0] = malloc(network.rows * network.cols * sizeof(network.net[0][0]));
-  for (size_t i = 0; i < network.rows; i++) {
-    alignment->net[i] = malloc(network.cols * sizeof(int)); //alignment->net[i-1] + network.cols;
-    for (size_t j = 0; j < network.cols; j++) {
-      alignment->net[i][j] = 0;
-    }
+void copy_network(struct Alignment * alignment, struct Network net) {
+  size_t i, j;
+  for (i = 0; i < net.rows; i++) {
+    alignment->net.graph[i] = malloc(net.cols * sizeof(int));
+    for (j = 0; j < net.cols; j++)
+      alignment->net.graph[i][j] = 0;
   }
-  for (int i = 0; i < num_coords; i++) {
-    alignment->net[coords[i][0]][coords[i][1]] = 1;
+  alignment->net.rows = i;
+  alignment->net.cols = j;
+}
+
+void plot_coords(struct Alignment * alignment, int ** coords, int num_coords) {
+  for (size_t i = 0; i < num_coords; i++) {
+    alignment->net.graph[coords[i][0]][coords[i][1]] = 1;
   }
   memcpy(&alignment->coords, &coords, sizeof(coords));
   alignment->num_coords = num_coords;
 }
 
-struct Alignment * swap(struct Alignment * alignment, int n1, int n2) {
-  struct Alignment * new_alignment = malloc(sizeof(struct Alignment));
-  new_alignment->num_coords = alignment->num_coords;
-  // allocate coords
-  new_alignment->coords = malloc(alignment->num_coords * sizeof(int*));
-  // copy coords
-  for (size_t i = 0; i < alignment->num_coords; i++) {
-    new_alignment->coords[i] = malloc(2 * sizeof(int));
-    new_alignment->coords[i][0] = alignment->coords[i][0];
-    new_alignment->coords[i][1] = alignment->coords[i][1];
-  }
-  // swap coords
-  int n10 = new_alignment->coords[n1][0];
-  int n11 = new_alignment->coords[n1][1];
-  new_alignment->coords[n1][0] = new_alignment->coords[n2][0];
-  new_alignment->coords[n1][1] = new_alignment->coords[n2][1];
-  new_alignment->coords[n2][0] = n10;
-  new_alignment->coords[n2][1] = n11;
-  generate_net(new_alignment, new_alignment->coords, new_alignment->num_coords);
-  return new_alignment;
+void create_network(struct Alignment * alignment, int ** coords, int num_coords) {
+  alignment->net.graph = malloc(network.rows * sizeof(int*));
+  copy_network(alignment, network);
+  plot_coords(alignment, coords, num_coords);
 }
 
-struct Alignment * move(struct Alignment * alignment, int node, int * coords) {
-  struct Alignment * new_alignment = malloc(sizeof(struct Alignment));
-  new_alignment->num_coords = alignment->num_coords;
-  // allocate coords
-  new_alignment->coords = malloc(alignment->num_coords * sizeof(int*));
-  // copy coords
-  for (size_t i = 0; i < alignment->num_coords; i++) {
-    new_alignment->coords[i] = malloc(2 * sizeof(int));
-    new_alignment->coords[i][0] = alignment->coords[i][0];
-    new_alignment->coords[i][1] = alignment->coords[i][1];
+void create_alignment(struct Alignment * to, struct Alignment * from) {
+  to->num_coords = from->num_coords;
+  to->coords = malloc(to->num_coords * sizeof(int*));
+  for (size_t i = 0; i < to->num_coords; i++) {
+    to->coords[i] = malloc(2 * sizeof(int));
+    to->coords[i][0] = from->coords[i][0];
+    to->coords[i][1] = from->coords[i][1];
   }
-  // move coords
-  new_alignment->coords[node][0] = coords[0];
-  new_alignment->coords[node][1] = coords[1];
-  generate_net(new_alignment, new_alignment->coords, new_alignment->num_coords);
-  return new_alignment;
+}
+
+struct Alignment * swap(struct Alignment * alignment, int n1, int n2) {
+  struct Alignment * neighbor = malloc(sizeof(struct Alignment));
+  create_alignment(neighbor, alignment);
+  int n10 = neighbor->coords[n1][0];
+  int n11 = neighbor->coords[n1][1];
+  neighbor->coords[n1][0] = neighbor->coords[n2][0];
+  neighbor->coords[n1][1] = neighbor->coords[n2][1];
+  neighbor->coords[n2][0] = n10;
+  neighbor->coords[n2][1] = n11;
+  create_network(neighbor, neighbor->coords, neighbor->num_coords);
+  return neighbor;
+}
+
+struct Alignment * move(struct Alignment * alignment, int node, int c1, int c2) {
+  struct Alignment * neighbor = malloc(sizeof(struct Alignment));
+  create_alignment(neighbor, alignment);
+  neighbor->coords[node][0] = c1;
+  neighbor->coords[node][1] = c2;
+  create_network(neighbor, neighbor->coords, neighbor->num_coords);
+  return neighbor;
 }
 
 void get_neighbors(struct Alignment * alignment, struct Alignment ** neighbors, int * num_neighbors) {
@@ -116,40 +114,33 @@ void get_neighbors(struct Alignment * alignment, struct Alignment ** neighbors, 
   for (i = 0; i < alignment->num_coords; i++)
     for (j = 0; j < network.rows; j++)
       for (k = 0; k < network.cols; k++)
-        if (alignment->net[j][k] == 0) {
-          int * coords = malloc(2 * sizeof(int));
-          coords[0] = j;
-          coords[1] = k;
-          neighbors[(*num_neighbors)++] = move(alignment, i, coords);
-        }
+        if (alignment->net.graph[j][k] == 0)
+          neighbors[(*num_neighbors)++] = move(alignment, i, j, k);
 }
 
 double edge_cover(struct Alignment * alignment, struct Alignment * solution) {
-  int i, j;
   double passed = 0.0;
-  for (i = 0; i < alignment->num_coords; i++)
-    for (j = 0; j < solution->num_coords; j++) {
+  for (size_t i = 0; i < alignment->num_coords; i++)
+    for (size_t j = 0; j < solution->num_coords; j++)
       if (alignment->coords[i][0] == solution->coords[j][0] &&
           alignment->coords[i][1] == solution->coords[j][1])
         passed++;
-    }
   return passed / (double)solution->num_coords;
 }
 
 struct Alignment * get_best_neighbor(struct Alignment * alignment, struct Alignment * solution) {
   struct Alignment ** neighbors = malloc(sizeof(struct Alignment *) * 10000);
   struct Alignment * best_neighbor;
-  int i = 0, num_neighbors;
+  int num_neighbors;
   double best_score = 0;
   get_neighbors(alignment, neighbors, &num_neighbors);
-  for (i = 0; i < num_neighbors; i++) {
+  for (size_t i = 0; i < num_neighbors; i++) {
     double score = edge_cover(neighbors[i], solution);
     if (score >= best_score) {
       best_score = score;
       best_neighbor = neighbors[i];
     }
   }
-  memcpy(best_neighbor, best_neighbor, sizeof(best_neighbor));
   free(neighbors);
   return best_neighbor;
 }
@@ -163,7 +154,6 @@ double temperature(double k) {
 }
 
 int readfiles(char * filename, int ** coords, int * num_coords, int * rows, int * cols) {
-  int i;
   char * line = NULL, * token;
   size_t len = 0;
   size_t read;
@@ -216,12 +206,12 @@ int main(int argc, char * argv[]) {
   readfiles(argv[3], sol_coords, &num_sol_coords, &rows, &cols);
   readfiles(argv[4], s_coords, &num_s_coords, &rows, &cols);
   init_network(rows, cols);
-  generate_net(sol, sol_coords, num_sol_coords);
-  generate_net(s, s_coords, num_s_coords);
+  create_network(sol, sol_coords, num_sol_coords);
+  create_network(s, s_coords, num_s_coords);
   printf("STARTING STATE:\n");
-  print_net(s->net, rows, cols);
+  print_net(s->net);
   printf("\nGOAL STATE:\n");
-  print_net(sol->net, rows, cols);
+  print_net(sol->net);
   printf("\npress enter> ");
   getchar();
   for (i = 0; i < atoi(argv[2]); i++) {
@@ -233,20 +223,20 @@ int main(int argc, char * argv[]) {
     s_new = get_best_neighbor(s, sol);
     t = temperature(i);
     printf("temp: %f, time=%d\n", t, i);
-    print_net(s->net, rows, cols);
+    print_net(s->net);
     es = edge_cover(s, sol);
     es_new = edge_cover(s_new, sol);
     p = probability(es, es_new, t);
     if (es_new - es >= 0)
       s = s_new;
     else {
-      accept = ! ((rand() % 100) < p);
+      accept = (rand() % 100) < 1 - p;
       if (accept)
         s = s_new;
     }
   }
   printf("\nfound:\n");
-  print_net(s->net, rows, cols);
+  print_net(s->net);
   free(s);
   free(sol);
   exit(EXIT_SUCCESS);
