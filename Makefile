@@ -8,7 +8,7 @@ LIBS = -lm -lncurses
 
 OPTS = -g
 
-SRC = src/c/mini.c
+SRC = src/mini.c
 
 MAIN = bin/mini
 
@@ -18,4 +18,5 @@ all:
 	$(CC) $(CXXFLAGS) $(SRC) $(OPTS) $(LIBS) -o $(MAIN)
 
 clean:
+	find . -type f | xargs touch
 	rm -rf bin
