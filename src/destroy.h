@@ -4,11 +4,13 @@
 void destroy_nodes(struct Node ** nodes, size_t num) {
   for (size_t i = 0; i < num; i++)
     free(nodes[i]);
+  // printf("info: nodes freed\n");
 }
 
 void destroy_edges(struct Edge ** edges, size_t num) {
   for (size_t i = 0; i < num - 1; i++)
     free(edges[i]);
+  // printf("info: edges freed\n");
 }
 
 void destroy_graph(struct Graph * graph) {
@@ -17,12 +19,15 @@ void destroy_graph(struct Graph * graph) {
   free(graph->nodes);
   free(graph->edges);
   free(graph);
+  // printf("info: graph freed\n");
 }
 
 void destroy_mapping(struct Mapping * map) {
-  free(map->tails);
-  free(map->heads);
+  trie_free(map->translation);
+  // free(map->tails);
+  // free(map->heads);
   free(map);
+  // printf("info: map freed\n");
 }
 
 void destroy_adj(struct Adjacency * adj) {
@@ -30,6 +35,7 @@ void destroy_adj(struct Adjacency * adj) {
     free(adj->matrix[i]);
   free(adj->matrix);
   free(adj);
+  // printf("info: adjacency freed\n");
 }
 
 void destroy_alignment(struct Alignment * a) {
@@ -39,11 +45,13 @@ void destroy_alignment(struct Alignment * a) {
   destroy_adj(a->a1);
   destroy_adj(a->a2);
   free(a);
+  // printf("info: alignment freed\n");
 }
 
 void destroy_alignment_copy(struct Alignment * a) {
   destroy_mapping(a->map);
   free(a);
+  // printf("info: alignment copy freed\n");
 }
 
 #endif

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <term.h>
 #include <regex.h>
+#include <trie.h>
 
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
@@ -127,26 +128,31 @@
 //   return neighbor;
 // }
 
-void swap(struct Alignment * neighbor, int n1, int n2) {
-  struct Node * tail = neighbor->map->tails[n1],
-              * head = neighbor->map->heads[n1];
-  neighbor->map->tails[n1] = neighbor->map->tails[n2];
-  neighbor->map->heads[n1] = neighbor->map->heads[n2];
-  neighbor->map->tails[n2] = tail;
-  neighbor->map->heads[n2] = head;
+void swap(struct Alignment * neighbor, char * tail, char * head) {
+  struct Node * old_head = (struct Node *)trie_lookup(neighbor->map->translation, tail),
+              * new_head = (struct Node *)trie_lookup(neighbor->map->translation, head); // neighbor->map->heads[n1];
+  trie_insert(neighbor->map->translation, tail, new_head);
+  trie_insert(neighbor->map->translation, head, old_head);
+  // neighbor->map->heads[n1] = neighbor->map->heads[n2];
+  // neighbor->map->heads[n2] = head;
 }
 
 void get_best_neighbor(struct Alignment * alignment, struct Alignment * best_neighbor) {
   int i, j, k, processed = 0;
   double best_score_yet = 0.0, current_score;
   struct Alignment * neighbor;
-  for (i = 0; i < alignment->map->smaller->num_nodes; i++)
-    for (j = 0; j < alignment->map->larger->num_nodes; j++)
+  for (i = 0; i < alignment->map->smaller->num_nodes; i++) {
+    for (j = 0; j < alignment->map->smaller->num_nodes; j++) {
       if (i != j) {
+        if (processed++ % 500 == 0) {
+          printf("testing %d / %d with best score: %f\n", processed, alignment->map->smaller->num_nodes * alignment->map->smaller->num_nodes, best_score_yet);
+        }
+        neighbor = malloc(sizeof(struct Alignment));
         copy_alignment(alignment, neighbor);
-        swap(neighbor, i, j);
+        char * tail = alignment->map->smaller->nodes[i]->name,
+             * head = alignment->map->smaller->nodes[j]->name;
+        swap(neighbor, tail, head);
         current_score = edge_coverage(neighbor);
-        printf("score: %f\n", current_score);
         if (current_score > best_score_yet) {
           best_score_yet = current_score;
           best_neighbor = neighbor;
@@ -154,9 +160,9 @@ void get_best_neighbor(struct Alignment * alignment, struct Alignment * best_nei
           destroy_alignment_copy(neighbor);
         }
       }
-  // for (i = 0; i < alignment->num_coords; i++)
-  //   for (j = 0; j < network.rows; j++)
-  //     for (k = 0; k < network.cols; k++)
+    }
+  }
+  // for (i = 0; i < alignment->map->smaller->num_nodes; i++) {
   //       if (alignment->net.graph[j][k] == 0) {
   //         neighbor = move(alignment, i, j, k);
   //         current_score = edge_cover(neighbor);
@@ -182,16 +188,10 @@ int main(int argc, char * argv[]) {
   /*
    * Usage: ./mini <#nodes> <timeout> <input puzzle> <input start position>
    */
-  // int i;
-  // double t, es, es_new, p;
-  // bool accept;
-  // int ** sol_coords, ** s_coords;
-  // int rows, cols, num_sol_coords, num_s_coords;
-  // sol_coords = malloc(atoi(argv[1]) * sizeof(int*));
-  // s_coords = malloc(atoi(argv[1]) * sizeof(int*));
   struct Alignment * s = malloc(sizeof(struct Alignment)),
                    * s_new = malloc(sizeof(struct Alignment));
   create_alignment(s, argv);
+
   // copy_alignment(s, s_new);
   // destroy_alignment(s); // use for original
   // destroy_mapping(s_new->map); // use for copies
@@ -203,7 +203,9 @@ int main(int argc, char * argv[]) {
     //   setupterm( NULL, STDOUT_FILENO, &result );
     // }
     // putp( tigetstr( "clear" ) );
+    printf("finding best next neighbor...\n");
     get_best_neighbor(s, s_new);
+    printf("best neighbor found");
     t = temperature(i);
     break;
     // printf("Generated at temp: %f, time=%d\n", t, i);
