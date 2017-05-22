@@ -2,15 +2,15 @@
 #define TOPOLOGY_H
 
 double full_edge_coverage(struct Alignment * alignment) {
-  double Ea = 0.0;
+  double score = 0.0;
   struct Node * translated_tail, * translated_head;
   for (size_t i = 0; i < alignment->map->smaller->num_edges; i++) {
     translated_tail = translate(alignment, alignment->map->smaller->edges[i]->tail->name);
     translated_head = translate(alignment, alignment->map->smaller->edges[i]->head->name);
     if (translated_tail != NULL && translated_head != NULL && alignment->a2->matrix[translated_tail->id][translated_head->id] == 1)
-      Ea++;
+      score++;
   }
-  return Ea / (double)alignment->map->smaller->num_edges;
+  return score / (double)alignment->map->smaller->num_edges;
 }
 
 double edge_coverage(struct Alignment * alignment, char * name) {
@@ -29,11 +29,11 @@ double edge_coverage(struct Alignment * alignment, char * name) {
 }
 
 double update_edge_coverage(struct Alignment * alignment, char * name1, char * name2) {
-  double Ea = 0.0;
-  Ea += edge_coverage(alignment, name1);
+  double score = 0.0;
+  score += edge_coverage(alignment, name1);
   if (name2 != NULL)
-    Ea += edge_coverage(alignment, name2);
-  return alignment->score + Ea;
+    score += edge_coverage(alignment, name2);
+  return alignment->score + score;
 }
 
 #endif
