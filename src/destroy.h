@@ -24,8 +24,6 @@ void destroy_graph(struct Graph * graph) {
 
 void destroy_mapping(struct Mapping * map) {
   trie_free(map->translation);
-  // free(map->tails);
-  // free(map->heads);
   free(map);
   // printf("info: map freed\n");
 }
@@ -42,8 +40,8 @@ void destroy_alignment(struct Alignment * a) {
   destroy_graph(a->map->smaller);
   destroy_graph(a->map->larger);
   destroy_mapping(a->map);
-  destroy_adj(a->a1);
-  destroy_adj(a->a2);
+  // destroy_adj(a->a1);
+  // destroy_adj(a->a2);
   free(a);
   // printf("info: alignment freed\n");
 }

@@ -19,6 +19,7 @@ struct Adjacency {
 struct Graph {
   struct Node ** nodes;
   struct Edge ** edges;
+  Trie * n2e;
   int num_nodes;
   int num_edges;
 } * G1, * G2;

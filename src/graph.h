@@ -23,11 +23,11 @@ let mapping_x = "g1[x] maps to g2[j]"
 
 */
 
-struct Node * translate(struct Alignment * alignment, struct Node * node) {
+struct Node * translate(struct Alignment * alignment, char * node) {
   // for (size_t i = 0; i < alignment->map->num_mappings; i++)
   //   if (alignment->map->tails[i] == node)
   //     return alignment->map->heads[i];
-  return (struct Node *)trie_lookup(alignment->map->translation, node->name);
+  return (struct Node *)trie_lookup(alignment->map->translation, node);
 }
 
 void insert_edge(struct Graph * graph, int index, int tail, int head) {

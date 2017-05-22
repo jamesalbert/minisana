@@ -37,10 +37,6 @@ void create_mapping(struct Mapping * map) {
 int create_graph(char * filename, struct Graph * graph) {
   char * line = NULL, * token;
   size_t len = 0;
-  /* regex */
-  regex_t node_regex, edge_regex;
-  regcomp(&node_regex, "^|{[[:alnum:]]", 0);
-  regcomp(&edge_regex, ".* ", 0);
   /* file reading */
   FILE * handle = fopen(filename, "r");
   if (handle == NULL)
@@ -69,11 +65,19 @@ int create_graph(char * filename, struct Graph * graph) {
       sscanf(line, "%d %d", &tail, &head);
       insert_edge(graph, i, tail, head);
   }
-  regfree(&node_regex);
-  regfree(&edge_regex);
   fclose(handle);
   if (line)
       free(line);
+  graph->n2e = trie_new();
+  for (size_t i = 0; i < graph->num_nodes; i++) {
+    char * name = graph->nodes[i]->name;
+    trie_insert(graph->n2e, name, arraylist_new(0));
+    ArrayList * edges = trie_lookup(graph->n2e, name);
+    for (size_t j = 0; j < graph->num_edges; j++) {
+      if (graph->edges[j]->tail == graph->nodes[i])
+        arraylist_append(edges, graph->edges[j]->head);
+    }
+  }
 }
 
 void create_alignment(struct Alignment * a, char * files[]) {
@@ -90,6 +94,7 @@ void create_alignment(struct Alignment * a, char * files[]) {
   a->map = map;
   a->a1 = a1;
   a->a2 = a2;
+  a->score = edge_coverage(a);
 }
 
 #endif
