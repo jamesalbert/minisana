@@ -12,7 +12,3 @@ cd minisana
 make
 ./bin/mini input/yeast.gw input/human.gw
 ```
-
-Here's a demonstration of an analogy to the software
-
-![](http://i.imgur.com/mlcfocv.gif)
