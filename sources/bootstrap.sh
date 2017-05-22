@@ -8,6 +8,6 @@ then
   cd stoke
   ./configure.sh
   make
-  echo 'export PATH="$PATH:/home/vagrant/stoke/bin"' > /home/vagrant/.bashrc
+  echo 'export PATH="$PATH:/home/vagrant/stoke/bin"' >> /home/vagrant/.bashrc
   cd ..
 fi
