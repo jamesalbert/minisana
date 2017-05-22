@@ -8,18 +8,14 @@ void create_adj(struct Adjacency * adj, struct Graph * graph) {
     adj->matrix[i] = malloc(graph->num_nodes * sizeof(int));
     memset(adj->matrix[i], 0, graph->num_nodes * sizeof(int));
   }
-  for (size_t i = 0; i < graph->num_edges; i++) {
+  for (size_t i = 0; i < graph->num_edges; i++)
     adj->matrix[graph->edges[i]->tail->id][graph->edges[i]->head->id] = 1;
-  }
 }
 
-void create_mapping(struct Mapping * map) {
-  size_t limit = min(G1->num_nodes, G2->num_nodes);
-  map->num_mappings = limit;
-  map->translation = trie_new();
-  for (size_t i = 0; i < limit; i++) {
-    trie_insert(map->translation, G1->nodes[i]->name, G2->nodes[i]);
-  }
+void create_mapping(Trie * map) {
+  size_t limit = G1->num_nodes;
+  for (size_t i = 0; i < limit; i++)
+    trie_insert(map, G1->nodes[i]->name, G2->nodes[i]);
 }
 
 int create_graph(char * filename, struct Graph * graph) {
@@ -69,7 +65,7 @@ int create_graph(char * filename, struct Graph * graph) {
 }
 
 void create_alignment(struct Alignment * a, char * files[]) {
-  struct Mapping * map = malloc(sizeof(struct Mapping));
+  Trie * map = trie_new();
   A1 = malloc(sizeof(struct Alignment));
   A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));

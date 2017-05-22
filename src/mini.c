@@ -10,10 +10,6 @@
 #include <regex.h>
 #include <trie.h>
 #include <arraylist.h>
-
-#define min(X,Y) ((X) < (Y) ? (X) : (Y))
-#define max(X,Y) ((X) > (Y) ? (X) : (Y))
-
 #include "structures.h"
 #include "graph.h"
 #include "topology.h"
@@ -23,14 +19,14 @@
 
 
 void move(struct Alignment * alignment, char * tail, struct Node * head) {
-  trie_insert(alignment->map->translation, tail, head);
+  trie_insert(alignment->map, tail, head);
 }
 
 void swap(struct Alignment * neighbor, char * tail, char * head) {
-  struct Node * old_head = (struct Node *)trie_lookup(neighbor->map->translation, tail),
-              * new_head = (struct Node *)trie_lookup(neighbor->map->translation, head);
-  trie_insert(neighbor->map->translation, tail, new_head);
-  trie_insert(neighbor->map->translation, head, old_head);
+  struct Node * old_head = (struct Node *)trie_lookup(neighbor->map, tail),
+              * new_head = (struct Node *)trie_lookup(neighbor->map, head);
+  trie_insert(neighbor->map, tail, new_head);
+  trie_insert(neighbor->map, head, old_head);
 }
 
 struct Alignment * get_rand_neighbor(struct Alignment * alignment, int node1, int node2, bool will_swap) {
@@ -69,7 +65,7 @@ int main(int argc, char * argv[]) {
   bool accept, will_swap;
   int random_node1, random_node2;
   printf("\n");
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 100; i++) {
     will_swap = rand() & 1;
     random_node1 = rand() % G1->num_nodes;
     random_node2 = rand() % G1->num_nodes;
@@ -96,9 +92,8 @@ int main(int argc, char * argv[]) {
   printf("\n");
   destroy_graph(G1);
   destroy_graph(G2);
-  destroy_adj(A1);
+  // destroy_adj(A1);
   destroy_adj(A2);
-  if (s != NULL)
-    destroy_alignment_copy(s);
+  destroy_alignment_copy(s);
   exit(EXIT_SUCCESS);
 }

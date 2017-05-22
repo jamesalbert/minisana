@@ -2,7 +2,7 @@
 #define GRAPH_H
 
 struct Node * translate(struct Alignment * alignment, char * node) {
-  return (struct Node *)trie_lookup(alignment->map->translation, node);
+  return (struct Node *)trie_lookup(alignment->map, node);
 }
 
 void insert_edge(struct Graph * graph, int index, int tail, int head) {

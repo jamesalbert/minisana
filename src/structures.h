@@ -24,13 +24,8 @@ struct Graph {
   Trie * n2e;
 } * G1, * G2;
 
-struct Mapping {
-  Trie * translation;
-  size_t num_mappings;
-};
-
 struct Alignment {
-  struct Mapping * map;
+  Trie * map;
   double score;
 };
 

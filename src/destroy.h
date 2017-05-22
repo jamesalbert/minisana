@@ -22,14 +22,10 @@ void destroy_graph(struct Graph * graph) {
   free(graph);
 }
 
-void destroy_mapping(struct Mapping * map) {
-  trie_free(map->translation);
-  free(map);
-}
-
 void destroy_adj(struct Adjacency * adj) {
-  for (size_t i = 0; i < adj->dim; i++)
+  for (size_t i = 0; i < adj->dim; i++) {
     free(adj->matrix[i]);
+  }
   free(adj->matrix);
   free(adj);
 }
@@ -37,14 +33,14 @@ void destroy_adj(struct Adjacency * adj) {
 void destroy_alignment(struct Alignment * a) {
   destroy_graph(G1);
   destroy_graph(G2);
-  destroy_mapping(a->map);
+  trie_free(a->map);
   destroy_adj(A1);
   destroy_adj(A2);
   free(a);
 }
 
 void destroy_alignment_copy(struct Alignment * a) {
-  destroy_mapping(a->map);
+  trie_free(a->map);
   free(a);
 }
 
