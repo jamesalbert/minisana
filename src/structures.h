@@ -19,14 +19,13 @@ struct Adjacency {
 struct Graph {
   struct Node ** nodes;
   struct Edge ** edges;
-  Trie * n2e;
   int num_nodes;
   int num_edges;
+  Trie * n2e;
 } * G1, * G2;
 
 struct Mapping {
   Trie * translation;
-  // int * translation;
   struct Graph * smaller;
   struct Graph * larger;
   size_t num_mappings;

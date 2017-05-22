@@ -16,4 +16,4 @@ cd c-algorithms
 ./autogen.sh
 make
 make install
-echo 'export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"' >> /home/vagrant/.bashrc

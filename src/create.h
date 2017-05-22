@@ -23,14 +23,9 @@ void create_mapping(struct Mapping * map) {
     map->smaller = G2;
   }
   map->num_mappings = limit;
-
-  // map->tails = malloc(limit * sizeof(struct Node *));
-  // map->heads = malloc(limit * sizeof(struct Node *));
   map->translation = trie_new();
   for (size_t i = 0; i < limit; i++) {
     trie_insert(map->translation, map->smaller->nodes[i]->name, map->larger->nodes[i]);
-    // map->tails[i] = g1->nodes[i];
-    // map->heads[i] = g2->nodes[i];
   }
 }
 
@@ -94,7 +89,7 @@ void create_alignment(struct Alignment * a, char * files[]) {
   a->map = map;
   a->a1 = a1;
   a->a2 = a2;
-  a->score = edge_coverage(a);
+  a->score = full_edge_coverage(a);
 }
 
 #endif
