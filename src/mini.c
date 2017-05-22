@@ -51,7 +51,7 @@ double probability(double es, double es_new, double t) {
 }
 
 double temperature(double k) {
-  return 1 * exp(-1 * (k / 1000.0));
+  return 1 * exp(-1 * (k / 100000.0));
 }
 
 int main(int argc, char * argv[]) {
@@ -65,7 +65,7 @@ int main(int argc, char * argv[]) {
   bool accept, will_swap;
   int random_node1, random_node2;
   printf("\n");
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 100000; i++) {
     will_swap = rand() & 1;
     random_node1 = rand() % G1->num_nodes;
     random_node2 = rand() % G1->num_nodes;
