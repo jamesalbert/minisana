@@ -29,7 +29,10 @@ void swap(struct Alignment * neighbor, char * tail, char * head) {
   trie_insert(neighbor->map, head, old_head);
 }
 
-struct Alignment * get_rand_neighbor(struct Alignment * alignment, int node1, int node2, bool will_swap) {
+struct Alignment * get_rand_neighbor(struct Alignment * alignment) {
+  bool will_swap = rand() & 1;
+  int node1 = rand() % G1->num_nodes,
+      node2 = rand() % G1->num_nodes;
   struct Alignment * neighbor = malloc(sizeof(struct Alignment));
   copy_alignment(alignment, neighbor);
   char * tail = G1->nodes[node1]->name,
@@ -62,14 +65,10 @@ int main(int argc, char * argv[]) {
                    * s_new;
   create_alignment(s, argv);
   double t, p;
-  bool accept, will_swap;
-  int random_node1, random_node2;
+  bool accept;
   printf("\n");
   for (int i = 0; i < 100000; i++) {
-    will_swap = rand() & 1;
-    random_node1 = rand() % G1->num_nodes;
-    random_node2 = rand() % G1->num_nodes;
-    s_new = get_rand_neighbor(s, random_node1, random_node2, will_swap);
+    s_new = get_rand_neighbor(s);
     t = temperature(i);
     if (i % 100 == 0) {
       printf("\033[A\r<%% Generated at temp: %f, time: %d, score: %f, edges aligned: %.0f / %d %%>\n",
