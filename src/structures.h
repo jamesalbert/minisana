@@ -14,7 +14,7 @@ struct Edge {
 struct Adjacency {
   int ** matrix;
   size_t dim;
-};
+} * A1, * A2;
 
 struct Graph {
   struct Node ** nodes;
@@ -26,15 +26,11 @@ struct Graph {
 
 struct Mapping {
   Trie * translation;
-  struct Graph * smaller;
-  struct Graph * larger;
   size_t num_mappings;
 };
 
 struct Alignment {
   struct Mapping * map;
-  struct Adjacency * a1;
-  struct Adjacency * a2;
   double score;
 };
 

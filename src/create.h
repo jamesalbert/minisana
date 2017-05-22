@@ -15,17 +15,10 @@ void create_adj(struct Adjacency * adj, struct Graph * graph) {
 
 void create_mapping(struct Mapping * map) {
   size_t limit = min(G1->num_nodes, G2->num_nodes);
-  if (limit == G1->num_nodes) {
-    map->larger = G2;
-    map->smaller = G1;
-  } else {
-    map->larger = G1;
-    map->smaller = G2;
-  }
   map->num_mappings = limit;
   map->translation = trie_new();
   for (size_t i = 0; i < limit; i++) {
-    trie_insert(map->translation, map->smaller->nodes[i]->name, map->larger->nodes[i]);
+    trie_insert(map->translation, G1->nodes[i]->name, G2->nodes[i]);
   }
 }
 
@@ -77,18 +70,24 @@ int create_graph(char * filename, struct Graph * graph) {
 
 void create_alignment(struct Alignment * a, char * files[]) {
   struct Mapping * map = malloc(sizeof(struct Mapping));
+  A1 = malloc(sizeof(struct Alignment));
+  A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));
   G2 = malloc(sizeof(struct Graph));
-  struct Adjacency * a1 = malloc(sizeof(struct Adjacency)),
-                   * a2 = malloc(sizeof(struct Adjacency));
+  struct stat st1, st2;
+  stat(files[1], &st1);
+  stat(files[2], &st2);
+  if (st1.st_size > st2.st_size) {
+    char * temp = files[1];
+    files[1] = files[2];
+    files[2] = temp;
+  }
   create_graph(files[1], G1);
   create_graph(files[2], G2);
   create_mapping(map);
-  create_adj(a1, G1);
-  create_adj(a2, G2);
+  create_adj(A1, G1);
+  create_adj(A2, G2);
   a->map = map;
-  a->a1 = a1;
-  a->a2 = a2;
   a->score = full_edge_coverage(a);
 }
 

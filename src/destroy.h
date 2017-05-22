@@ -2,8 +2,10 @@
 #define DESTROY_H
 
 void destroy_nodes(struct Node ** nodes, size_t num) {
-  for (size_t i = 0; i < num; i++)
+  for (size_t i = 0; i < num; i++) {
+    free(nodes[i]->name);
     free(nodes[i]);
+  }
 }
 
 void destroy_edges(struct Edge ** edges, size_t num) {
@@ -33,11 +35,11 @@ void destroy_adj(struct Adjacency * adj) {
 }
 
 void destroy_alignment(struct Alignment * a) {
-  destroy_graph(a->map->smaller);
-  destroy_graph(a->map->larger);
+  destroy_graph(G1);
+  destroy_graph(G2);
   destroy_mapping(a->map);
-  destroy_adj(a->a1);
-  destroy_adj(a->a2);
+  destroy_adj(A1);
+  destroy_adj(A2);
   free(a);
 }
 
