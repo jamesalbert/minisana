@@ -20,7 +20,7 @@
 #include "create.h"
 #include "copy.h"
 #include "destroy.h"
-#include "print.h"
+
 
 void move(struct Alignment * alignment, char * tail, struct Node * head) {
   trie_insert(alignment->map->translation, tail, head);
