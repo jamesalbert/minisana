@@ -13,6 +13,7 @@
 #include "print.h"
 
 #define TIME 10000000000
+#define INTERVAL 100000
 
 void intHandler(int dummy) {
   print_mapping();
@@ -87,7 +88,7 @@ int main(int argc, char * argv[]) {
     prev_score = A->score;
     get_rand_neighbor(false);
     t = temperature(i);
-    if (i % 100 == 0)
+    if (i % INTERVAL == 0)
       print_status(t, i);
     p = probability(prev_score, t);
     if (A->score - prev_score < 0)
