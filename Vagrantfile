@@ -22,6 +22,6 @@ Vagrant.configure("2") do |config|
     v.cpus = cpus
   end
   config.vm.provision "shell", path: "sources/install_deps.sh"
-  config.vm.provision "shell", path: "sources/bootstrap.sh", privileged: false
+  # config.vm.provision "shell", path: "sources/bootstrap.sh", privileged: false
   config.vm.synced_folder ".", "/home/vagrant/minisana"
 end
