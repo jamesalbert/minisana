@@ -70,14 +70,17 @@ void create_alignment(struct Alignment * a, char * files[]) {
   A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));
   G2 = malloc(sizeof(struct Graph));
-  struct stat st1, st2;
-  stat(files[1], &st1);
-  stat(files[2], &st2);
-  if (st1.st_size > st2.st_size) {
-    char * temp = files[1];
-    files[1] = files[2];
-    files[2] = temp;
-  }
+  // file size not a good indication
+  // of node/edge count. Files must
+  // be specified in order small -> big
+  // struct stat st1, st2;
+  // stat(files[1], &st1);
+  // stat(files[2], &st2);
+  // if (st1.st_size > st2.st_size) {
+  //   char * temp = files[1];
+  //   files[1] = files[2];
+  //   files[2] = temp;
+  // }
   create_graph(files[1], G1);
   create_graph(files[2], G2);
   create_mapping(map);

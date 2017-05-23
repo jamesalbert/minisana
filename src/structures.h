@@ -27,6 +27,7 @@ struct Graph {
 struct Alignment {
   Trie * map;
   double score;
+  int last_move[3];
 };
 
 #endif
