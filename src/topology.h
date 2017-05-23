@@ -2,6 +2,8 @@
 #define TOPOLOGY_H
 
 double edge_coverage(short int node) { // u = name
+  if (G1->num_outgoing[node] == 0)
+    return 0.0;
   double score = 0.0;
   short int translated_node, translated_head, head;
   translated_node = G1->translate[node];

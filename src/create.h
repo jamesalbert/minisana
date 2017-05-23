@@ -24,7 +24,7 @@ int create_graph(char * filename, struct Graph * graph) {
   graph->num_nodes = 0;
   for (size_t i = 0; i < 5; i++)
     getline(&line, &len, handle);
-  sscanf(line, "%hu", &graph->num_nodes);
+  sscanf(line, "%u", &graph->num_nodes);
   graph->id2name = malloc(graph->num_nodes * sizeof(char *));
   for (size_t i = 0; i < graph->num_nodes; i++) {
     /* parse node */
@@ -36,13 +36,13 @@ int create_graph(char * filename, struct Graph * graph) {
   }
   /* get number of edges */
   getline(&line, &len, handle);
-  sscanf(line, "%d", &graph->num_edges);
+  sscanf(line, "%u", &graph->num_edges);
   graph->edges = malloc(graph->num_nodes * sizeof(short int *));
   graph->num_outgoing = malloc(graph->num_nodes * sizeof(short int *));
   memset(graph->num_outgoing, 0, graph->num_nodes * sizeof(short int *));
   for (size_t i = 0; i < graph->num_nodes; i++)
-    graph->edges[i] = malloc(sizeof(short int));
-  for (size_t i = 0; i < graph->num_edges; i++) {
+    graph->edges[i] = malloc(0);
+  for (short int i = 0; i < graph->num_edges; i++) {
     /* parse edge */
     getline(&line, &len, handle);
     short int tail, head;
