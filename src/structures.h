@@ -9,10 +9,10 @@ struct Adjacency {
 struct Graph {
   short int * taken;
   short int * translate;
-  short int ** edges;
+  int ** edges;
   short int * num_outgoing;
   short int num_nodes;
-  short int num_edges;
+  int num_edges;
   char ** id2name;
 } * G1, * G2;
 

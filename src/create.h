@@ -36,7 +36,7 @@ int create_graph(char * filename, struct Graph * graph) {
   }
   /* get number of edges */
   getline(&line, &len, handle);
-  sscanf(line, "%hu", &graph->num_edges);
+  sscanf(line, "%d", &graph->num_edges);
   graph->edges = malloc(graph->num_nodes * sizeof(short int *));
   graph->num_outgoing = malloc(graph->num_nodes * sizeof(short int *));
   memset(graph->num_outgoing, 0, graph->num_nodes * sizeof(short int *));
