@@ -7,15 +7,14 @@ CXXFLAGS = -std=c11
 
 LIBS = -lm -I/usr/local/include/libcalg-1.0/libcalg
 
-OPTS = -g
+OPTS = -ggdb
 
 SRC = src/mini.c
 
 MAIN = bin/mini
 
 all:
-	rm -rf bin
-	mkdir bin
+	rm -f bin/mini
 	$(CC) $(CXXFLAGS) $(SRC) $(OPTS) $(LIBS) -o $(MAIN)
 
 clean:

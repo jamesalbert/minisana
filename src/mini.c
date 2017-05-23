@@ -13,7 +13,9 @@
 #include "print.h"
 
 #define TIME 10000000000
-#define INTERVAL 100000
+#define T_INITIAL 1
+#define T_DECAY 1000
+#define INTERVAL 1000000
 
 void intHandler(int dummy) {
   print_mapping();
@@ -72,7 +74,7 @@ double probability(double prev_score, double t) {
 }
 
 double temperature(double k) {
-  return 1 * exp(-1 * (k / (double)TIME));
+  return T_INITIAL * exp(-T_DECAY * (k / (double)TIME));
 }
 
 int main(int argc, char * argv[]) {
