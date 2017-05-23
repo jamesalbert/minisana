@@ -1,10 +1,11 @@
 CC = gcc
 
 #CXXFLAGS = -Wall -fno-inline -O2 -std=c++11 -g
-CXXFLAGS = -std=c11 -O3 -fno-inline
+#CXXFLAGS = -std=c11 -O3 -fno-inline
+CXXFLAGS = -std=c11
 # CXXFLAGS = -U__STRICT_ANSI__ -Wall -std=c++11 -O3 #-ggdb -static -Bstatic
 
-LIBS = -lm -lcalg -lncurses -lpthread -I/usr/local/include/libcalg-1.0/libcalg
+LIBS = -lm -I/usr/local/include/libcalg-1.0/libcalg
 
 OPTS = -g
 

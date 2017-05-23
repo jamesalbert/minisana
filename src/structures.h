@@ -1,33 +1,24 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 
-struct Node {
-  char * name;
-  int id;
-};
-
-struct Edge {
-  struct Node * tail;
-  struct Node * head;
-};
-
 struct Adjacency {
   int ** matrix;
   size_t dim;
 } * A1, * A2;
 
 struct Graph {
-  struct Node ** nodes;
-  struct Edge ** edges;
-  int num_nodes;
-  int num_edges;
-  Trie * n2e;
+  short int * taken;
+  short int * translate;
+  short int ** edges;
+  short int * num_outgoing;
+  short int num_nodes;
+  short int num_edges;
+  char ** id2name;
 } * G1, * G2;
 
 struct Alignment {
-  Trie * map;
   double score;
-  int last_move[3];
-};
+  int last_move[4];
+} * A;
 
 #endif

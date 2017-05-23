@@ -3,19 +3,14 @@
 
 void create_adj(struct Adjacency * adj, struct Graph * graph) {
   adj->dim = graph->num_nodes;
-  adj->matrix = malloc(graph->num_nodes * sizeof(int*));
-  for (size_t i = 0; i < graph->num_nodes; i++) {
-    adj->matrix[i] = malloc(graph->num_nodes * sizeof(int));
-    memset(adj->matrix[i], 0, graph->num_nodes * sizeof(int));
+  adj->matrix = malloc(adj->dim * sizeof(int*));
+  for (size_t i = 0; i < adj->dim; i++) {
+    adj->matrix[i] = malloc(adj->dim * sizeof(int));
+    memset(adj->matrix[i], 0, adj->dim * sizeof(int));
   }
-  for (size_t i = 0; i < graph->num_edges; i++)
-    adj->matrix[graph->edges[i]->tail->id][graph->edges[i]->head->id] = 1;
-}
-
-void create_mapping(Trie * map) {
-  size_t limit = G1->num_nodes;
-  for (size_t i = 0; i < limit; i++)
-    trie_insert(map, G1->nodes[i]->name, G2->nodes[i]);
+  for (size_t i = 0; i < graph->num_nodes; i++)
+    for (size_t j = 0; j < graph->num_outgoing[i]; j++)
+      adj->matrix[i][graph->edges[i][j]] = 1;
 }
 
 int create_graph(char * filename, struct Graph * graph) {
@@ -29,65 +24,60 @@ int create_graph(char * filename, struct Graph * graph) {
   graph->num_nodes = 0;
   for (size_t i = 0; i < 5; i++)
     getline(&line, &len, handle);
-  sscanf(line, "%d", &graph->num_nodes);
-  graph->nodes = malloc(graph->num_nodes * sizeof(struct Node *));
+  sscanf(line, "%hu", &graph->num_nodes);
+  graph->id2name = malloc(graph->num_nodes * sizeof(char *));
   for (size_t i = 0; i < graph->num_nodes; i++) {
-      /* parse node */
-      getline(&line, &len, handle);
-      token = strtok(line, "{");
-      token = strtok(NULL, "}");
-      insert_node(graph, i, token);
+    /* parse node */
+    getline(&line, &len, handle);
+    token = strtok(line, "{");
+    token = strtok(NULL, "}");
+    graph->id2name[i] = malloc(strlen(token) * sizeof(char));
+    strcpy(graph->id2name[i], token);
   }
   /* get number of edges */
   getline(&line, &len, handle);
-  sscanf(line, "%d", &graph->num_edges);
-  graph->edges = malloc(graph->num_edges * sizeof(struct Edge *));
+  sscanf(line, "%hu", &graph->num_edges);
+  graph->edges = malloc(graph->num_nodes * sizeof(short int *));
+  graph->num_outgoing = malloc(graph->num_nodes * sizeof(short int *));
+  memset(graph->num_outgoing, 0, graph->num_nodes * sizeof(short int *));
+  for (size_t i = 0; i < graph->num_nodes; i++)
+    graph->edges[i] = malloc(sizeof(short int));
   for (size_t i = 0; i < graph->num_edges; i++) {
-      /* parse edge */
-      getline(&line, &len, handle);
-      int tail, head;
-      sscanf(line, "%d %d", &tail, &head);
-      insert_edge(graph, i, tail, head);
+    /* parse edge */
+    getline(&line, &len, handle);
+    short int tail, head;
+    sscanf(line, "%hu %hu", &tail, &head);
+    size_t new_size = ++graph->num_outgoing[tail - 1] * sizeof(short int);
+    graph->edges[tail - 1] = realloc(graph->edges[tail - 1], new_size);
+    graph->edges[tail - 1][graph->num_outgoing[tail - 1] - 1] = head;
   }
   fclose(handle);
   if (line)
       free(line);
-  graph->n2e = trie_new();
-  for (size_t i = 0; i < graph->num_nodes; i++) {
-    char * name = graph->nodes[i]->name;
-    trie_insert(graph->n2e, name, arraylist_new(0));
-    ArrayList * edges = trie_lookup(graph->n2e, name);
-    for (size_t j = 0; j < graph->num_edges; j++) {
-      if (graph->edges[j]->tail == graph->nodes[i])
-        arraylist_append(edges, graph->edges[j]->head);
-    }
-  }
 }
 
-void create_alignment(struct Alignment * a, char * files[]) {
-  Trie * map = trie_new();
+void create_alignment(char * files[]) {
   A1 = malloc(sizeof(struct Alignment));
   A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));
   G2 = malloc(sizeof(struct Graph));
-  // file size not a good indication
-  // of node/edge count. Files must
-  // be specified in order small -> big
-  // struct stat st1, st2;
-  // stat(files[1], &st1);
-  // stat(files[2], &st2);
-  // if (st1.st_size > st2.st_size) {
-  //   char * temp = files[1];
-  //   files[1] = files[2];
-  //   files[2] = temp;
-  // }
   create_graph(files[1], G1);
   create_graph(files[2], G2);
-  create_mapping(map);
+  if (G1->num_nodes > G2->num_nodes) {
+    struct Graph * temp = G1;
+    G1 = G2;
+    G2 = temp;
+  }
   create_adj(A1, G1);
   create_adj(A2, G2);
-  a->map = map;
-  a->score = full_edge_coverage(a);
+  G1->translate = malloc(G1->num_nodes * sizeof(short int));
+  G2->taken = malloc(G2->num_nodes * sizeof(short int));
+  memset(G2->taken, 0, G2->num_nodes * sizeof(short int));
+  for (short int i = 0; i < G1->num_nodes; i++)
+    G1->translate[i] = i;
+  for (short int i = 0; i < G2->num_nodes; i++)
+    G2->taken[i] = 0;
+  A->score = full_edge_coverage(A);
 }
 
 #endif

@@ -1,34 +1,23 @@
 #ifndef TOPOLOGY_H
 #define TOPOLOGY_H
 
-double edge_coverage(struct Alignment * alignment, char * name) { // u = name
+double edge_coverage(short int node) { // u = name
   double score = 0.0;
-  struct Node * translated_node, * translated_head, * head;
-  ArrayList * edges;
-  translated_node = translate(alignment, name); // a(u) = translated_node->name
-  edges = (ArrayList *)trie_lookup(G1->n2e, name); // u's edges (potential v's)
-  for (size_t i = 0; i < edges->length; i++) {
-    head = (struct Node *)edges->data[i]; // assume v = head->name
-    translated_head = translate(alignment, head->name); // a(v) = translated_head->name
-    if (translated_node != NULL && translated_head != NULL &&
-        A2->matrix[translated_node->id][translated_head->id] == 1)
+  short int translated_node, translated_head, head;
+  translated_node = G1->translate[node];
+  for (size_t i = 0; i < G1->num_outgoing[node]; i++) {
+    head = G1->edges[node][i];
+    translated_head = G1->translate[head]; // a(v) = translated_head->name
+    if (A2->matrix[translated_node][translated_head] == 1)
       score++;
   }
-  return score / (double)G1->num_edges;
+  return fabs(score / (double)G1->num_edges);
 }
 
-double full_edge_coverage(struct Alignment * alignment) {
+double full_edge_coverage() {
   double score = 0.0;
-  for (size_t i = 0; i < G1->num_nodes; i++) {
-    score += edge_coverage(alignment, G1->nodes[i]->name);
-  }
-  return score;
-}
-
-double small_edge_coverage(struct Alignment * alignment, char * name1, char * name2) {
-  double score = edge_coverage(alignment, name1);
-  if (name2 != NULL)
-    score += edge_coverage(alignment, name2);
+  for (short int i = 1; i < G1->num_nodes + 1; i++)
+    score += edge_coverage(i);
   return score;
 }
 

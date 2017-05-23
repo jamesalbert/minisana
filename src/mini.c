@@ -5,62 +5,69 @@
 #include <string.h>
 #include <math.h>
 #include <unistd.h>
-#include <term.h>
-#include <sys/stat.h>
-#include <regex.h>
-#include <trie.h>
-#include <arraylist.h>
+#include <signal.h>
 #include "structures.h"
-#include "graph.h"
 #include "topology.h"
 #include "create.h"
-#include "copy.h"
 #include "destroy.h"
+#include "print.h"
 
-#define TIME 100000000
+#define TIME 10000000000
 
-void move(struct Alignment * alignment, char * tail, struct Node * head) {
-  trie_insert(alignment->map, tail, head);
+void intHandler(int dummy) {
+  print_mapping();
+  free_everything();
+  exit(EXIT_FAILURE);
 }
 
-void swap(struct Alignment * neighbor, char * tail, char * head) {
-  struct Node * old_head = (struct Node *)trie_lookup(neighbor->map, tail),
-              * new_head = (struct Node *)trie_lookup(neighbor->map, head);
-  trie_insert(neighbor->map, tail, new_head);
-  trie_insert(neighbor->map, head, old_head);
+void move(short int node1, short int node2, short int old) {
+  if (G2->taken[node2] == 1)
+    return;
+  G1->translate[node1] = node2;
+  G2->taken[node2] = 1;
+  G2->taken[old] = 0;
 }
 
-void get_rand_neighbor(struct Alignment * alignment, bool undo) {
+void swap(short int node1, short int node2) {
+  if (node1 == node2)
+    return;
+  short int temp = G1->translate[node1];
+  G1->translate[node1] = G1->translate[node2];
+  G1->translate[node2] = temp;
+}
+
+void get_rand_neighbor(bool undo) {
   bool will_swap;
-  int node1, node2;
+  short int node1, node2, old_anode1;
   char * tail, * head;
   if (undo) {
-    will_swap = alignment->last_move[0];
-    node1 = alignment->last_move[2];
-    node2 = alignment->last_move[1];
+    will_swap = A->last_move[0];
+    node1 = will_swap ? A->last_move[2] : A->last_move[1];
+    node2 = will_swap ? A->last_move[1] : A->last_move[3];
   } else {
     will_swap = rand() & 1;
-    node1 = rand() % G1->num_nodes;
-    node2 = rand() % G1->num_nodes;
+    // do {
+      node1 = rand() % G1->num_nodes;
+      node2 = rand() % (will_swap ? G1->num_nodes : G2->num_nodes);
+    // } while (!will_swap && G2->taken[node2] == 1);
   }
-  tail = G1->nodes[node1]->name;
-  head = will_swap ? G1->nodes[node2]->name : NULL;
-  alignment->score -= small_edge_coverage(alignment, tail, head);
-  if (will_swap)
-    swap(alignment, tail, head);
-  else {
-    struct Node * node = G2->nodes[node2];
-    move(alignment, tail, node);
-  }
-  alignment->score += small_edge_coverage(alignment, tail, head);
-  alignment->score = fabs(alignment->score);
-  alignment->last_move[0] = (int)will_swap;
-  alignment->last_move[1] = node1;
-  alignment->last_move[2] = node2;
+  old_anode1 = G1->translate[node1];
+  A->score -= edge_coverage(node1);
+  if (will_swap) {
+    A->score -= edge_coverage(node2);
+    swap(node1, node2);
+    A->score += edge_coverage(node2);
+  } else
+    move(node1, node2, old_anode1);
+  A->score += edge_coverage(node1);
+  A->last_move[0] = (int)will_swap;
+  A->last_move[1] = node1;
+  A->last_move[2] = node2;
+  A->last_move[3] = old_anode1;
 }
 
-double probability(double es, double es_new, double t) {
-  return exp(-(es_new - es) / t);
+double probability(double prev_score, double t) {
+  return exp(-(A->score - prev_score) / t);
 }
 
 double temperature(double k) {
@@ -70,32 +77,25 @@ double temperature(double k) {
 int main(int argc, char * argv[]) {
   /*
    * Usage: ./mini <smaller network> <larger network>
-   */
-  struct Alignment * s = malloc(sizeof(struct Alignment));
-  create_alignment(s, argv);
+  */
+  signal(SIGINT, intHandler);
+  A = malloc(sizeof(struct Alignment));
+  create_alignment(argv);
   double t, p, prev_score;
-  bool accept;
   printf("\n");
   for (int i = 0; i < TIME; i++) {
-    prev_score = s->score;
-    get_rand_neighbor(s, false);
+    prev_score = A->score;
+    get_rand_neighbor(false);
     t = temperature(i);
-    if (i % 100 == 0) {
-      printf("\033[A\r<%% Generated at temp: %f, time: %d, score: %f, edges aligned: %.0f / %d %%>\n",
-      t, i, s->score, s->score * G1->num_edges, G1->num_edges);
-    }
-    p = probability(prev_score, s->score, t);
-    if (s->score - prev_score < 0) {
-      accept = (rand() % 100) < p;
-      if (accept)
-        get_rand_neighbor(s, true);
-    }
+    if (i % 100 == 0)
+      print_status(t, i);
+    p = probability(prev_score, t);
+    if (A->score - prev_score < 0)
+      if ((rand() % 100) < p)
+        get_rand_neighbor(true);
   }
   printf("\n");
-  destroy_graph(G1);
-  destroy_graph(G2);
-  // destroy_adj(A1);
-  destroy_adj(A2);
-  destroy_alignment_copy(s);
+  print_mapping();
+  free_everything();
   exit(EXIT_SUCCESS);
 }
