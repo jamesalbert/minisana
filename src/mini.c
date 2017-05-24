@@ -52,22 +52,24 @@ void get_rand_neighbor(bool undo) {
     // } while (!will_swap && G2->taken[node2] == 1);
   }
   old_anode1 = G1->translate[node1];
-  A->score -= edge_coverage(node1);
+  A->score = abs(A->score - edge_coverage(node1));
   if (will_swap) {
-    A->score -= edge_coverage(node2);
+    A->score = abs(A->score - edge_coverage(node2));
     swap(node1, node2);
-    A->score += edge_coverage(node2);
+    A->score = abs(A->score + edge_coverage(node2));
   } else
     move(node1, node2, old_anode1);
-  A->score += edge_coverage(node1);
+  A->score = abs(A->score + edge_coverage(node1));
+  if (A->score < 0)
+    getchar();
   A->last_move[0] = (int)will_swap;
   A->last_move[1] = node1;
   A->last_move[2] = node2;
   A->last_move[3] = old_anode1;
 }
 
-double probability(double prev_score, double t) {
-  return exp(-(A->score - prev_score) / t);
+double probability(unsigned int prev_score, double t) {
+  return exp(-(A->score - (double)prev_score) / t);
 }
 
 double temperature(double k) {
@@ -81,7 +83,8 @@ int main(int argc, char * argv[]) {
   signal(SIGINT, intHandler);
   A = malloc(sizeof(struct Alignment));
   create_alignment(argv);
-  double t, p, prev_score;
+  double t, p;
+  unsigned int prev_score;
   printf("\n");
   for (int i = 0; i < TIME; i++) {
     prev_score = A->score;

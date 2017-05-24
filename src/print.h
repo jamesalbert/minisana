@@ -16,8 +16,8 @@ void print_mapping() {
 }
 
 void print_status(double t, int i) {
-  printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, edges aligned: %.0f / %d @@@\n",
-  t, i, A->score, A->score * G1->num_edges, G1->num_edges);
+  printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, edges aligned: %d / %d @@@\n",
+  t, i, (double)A->score / (double)G1->num_edges, A->score, G1->num_edges);
 }
 
 #endif

@@ -17,7 +17,7 @@ struct Graph {
 } * G1, * G2;
 
 struct Alignment {
-  double score;
+  unsigned int score;
   int last_move[4];
 } * A;
 
