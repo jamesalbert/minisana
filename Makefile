@@ -23,13 +23,13 @@ MAIN = bin/mini
 all: $(MAIN)
 
 $(MAIN): $(OBJS)
-  @mkdir bin
-  $(CC) $(CXXFLAGS) -o $(MAIN) $(OBJS) $(LIBS)
+	@mkdir bin
+	$(CC) $(CXXFLAGS) -o $(MAIN) $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o: %.c
-  @mkdir -p $(dir $@)
-  $(CC) -c -o $@ $< $(CXXFLAGS)
+	@mkdir -p $(dir $@)
+	$(CC) -c -o $@ $< $(CXXFLAGS)
 
 clean:
-  find . -type f | xargs touch
-  rm -rf bin _objs
+	find . -type f | xargs touch
+	rm -rf bin _objs
