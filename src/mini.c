@@ -13,6 +13,9 @@
 #include "print.h"
 
 #define TIME 10000000000
+#define T_INITIAL 1
+#define T_DECAY 1000
+#define INTERVAL 1000000
 
 void intHandler(int dummy) {
   print_mapping();
@@ -73,7 +76,7 @@ double probability(unsigned int prev_score, double t) {
 }
 
 double temperature(double k) {
-  return 1 * exp(-1 * (k / (double)TIME));
+  return T_INITIAL * exp(-T_DECAY * (k / (double)TIME));
 }
 
 int main(int argc, char * argv[]) {
@@ -90,7 +93,7 @@ int main(int argc, char * argv[]) {
     prev_score = A->score;
     get_rand_neighbor(false);
     t = temperature(i);
-    if (i % 100 == 0)
+    if (i % INTERVAL == 0)
       print_status(t, i);
     p = probability(prev_score, t);
     if (A->score - prev_score < 0)
