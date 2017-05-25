@@ -8,16 +8,14 @@ int edge_coverage(int node) { // u = name
   for (size_t i = 0; i < G1->num_outgoing[node]; i++) {
     head = G1->outgoing_edges[node][i];
     translated_head = G1->translate[head]; // a(v) = translated_head->name
-    if (A2->matrix[translated_node][translated_head] == 1) {
+    if (A2->matrix[translated_node][translated_head] == 1)
       ++score;
-    }
   }
   for (size_t i = 0; i < G1->num_incoming[node]; i++) {
     tail = G1->incoming_edges[node][i];
     translated_tail = G1->translate[tail]; // a(v) = translated_head->name
-    if (A2->matrix[translated_tail][translated_node] == 1) {
+    if (A2->matrix[translated_tail][translated_node] == 1)
       ++score;
-    }
   }
   return score;
 }

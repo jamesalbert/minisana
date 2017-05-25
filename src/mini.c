@@ -55,9 +55,8 @@ void get_rand_neighbor(bool undo) {
     A->score -= edge_coverage(node2);
     swap(node1, node2);
     A->score += edge_coverage(node2);
-  } else {
+  } else
     move(node1, node2, old);
-  }
   A->score += edge_coverage(node1);
   A->last_move[0] = will_swap;
   A->last_move[1] = node1;
