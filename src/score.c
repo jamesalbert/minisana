@@ -47,7 +47,7 @@ unsigned int sequence_similarity(short int id) {
 }
 
 unsigned int full_sequence_similarity() {
-  int score = 0;
+  unsigned int score = 0;
   for (short int i = 0; i < G1->num_nodes; i++) {
     score += sequence_similarity(i);
   }
