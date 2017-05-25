@@ -9,16 +9,18 @@ struct Adjacency {
 struct Graph {
   short int * taken;
   short int * translate;
-  short int ** edges;
-  short int * num_outgoing;
-  unsigned int num_nodes;
+  short int ** outgoing_edges;
+  short int ** incoming_edges;
+  unsigned int * num_outgoing;
+  unsigned int * num_incoming;
   unsigned int num_edges;
+  short int num_nodes;
   char ** id2name;
 } * G1, * G2;
 
 struct Alignment {
-  double score;
-  int last_move[4];
+  int score;
+  short int last_move[4];
 } * A;
 
 #endif

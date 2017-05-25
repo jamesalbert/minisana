@@ -5,7 +5,7 @@ CC = gcc
 CXXFLAGS = -std=c11
 # CXXFLAGS = -U__STRICT_ANSI__ -Wall -std=c++11 -O3 #-ggdb -static -Bstatic
 
-LIBS = -lm -I/usr/local/include/libcalg-1.0/libcalg
+LIBS = -lm
 
 OPTS = -ggdb
 

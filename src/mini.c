@@ -23,7 +23,7 @@ void intHandler(int dummy) {
   exit(EXIT_FAILURE);
 }
 
-void move(short int node1, short int node2, short int old) {
+void move(int node1, int node2, int old) {
   if (G2->taken[node2] == 1)
     return;
   G1->translate[node1] = node2;
@@ -31,46 +31,41 @@ void move(short int node1, short int node2, short int old) {
   G2->taken[old] = 0;
 }
 
-void swap(short int node1, short int node2) {
-  if (node1 == node2)
-    return;
-  short int temp = G1->translate[node1];
+void swap(int node1, int node2) {
+  int temp = G1->translate[node1];
   G1->translate[node1] = G1->translate[node2];
   G1->translate[node2] = temp;
 }
 
 void get_rand_neighbor(bool undo) {
   bool will_swap;
-  short int node1, node2, old_anode1;
-  char * tail, * head;
+  short int node1, node2, old;
   if (undo) {
     will_swap = A->last_move[0];
-    node1 = will_swap ? A->last_move[2] : A->last_move[1];
-    node2 = will_swap ? A->last_move[1] : A->last_move[3];
+    node1 = (will_swap ? A->last_move[2] : A->last_move[1]);
+    node2 = (will_swap ? A->last_move[1] : A->last_move[3]);
   } else {
     will_swap = rand() & 1;
-    // do {
-      node1 = rand() % G1->num_nodes;
-      node2 = rand() % (will_swap ? G1->num_nodes : G2->num_nodes);
-    // } while (!will_swap && G2->taken[node2] == 1);
+    node1 = rand() % G1->num_nodes;
+    node2 = rand() % (will_swap ? G1->num_nodes : G2->num_nodes);
   }
-  old_anode1 = G1->translate[node1];
+  old = G1->translate[node1];
   A->score -= edge_coverage(node1);
   if (will_swap) {
     A->score -= edge_coverage(node2);
     swap(node1, node2);
     A->score += edge_coverage(node2);
   } else
-    move(node1, node2, old_anode1);
+    move(node1, node2, old);
   A->score += edge_coverage(node1);
-  A->last_move[0] = (int)will_swap;
+  A->last_move[0] = will_swap;
   A->last_move[1] = node1;
   A->last_move[2] = node2;
-  A->last_move[3] = old_anode1;
+  A->last_move[3] = old;
 }
 
-double probability(double prev_score, double t) {
-  return exp(-(A->score - prev_score) / t);
+double probability(int prev_score, double t) {
+  return exp(-(A->score - (double)prev_score) / t);
 }
 
 double temperature(double k) {
@@ -84,7 +79,8 @@ int main(int argc, char * argv[]) {
   signal(SIGINT, intHandler);
   A = malloc(sizeof(struct Alignment));
   create_alignment(argv);
-  double t, p, prev_score;
+  double t, p;
+  int prev_score;
   printf("\n");
   for (int i = 0; i < TIME; i++) {
     prev_score = A->score;

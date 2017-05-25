@@ -16,8 +16,17 @@ void print_mapping() {
 }
 
 void print_status(double t, int i) {
-  printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, edges aligned: %.0f / %d @@@\n",
-  t, i, A->score, A->score * G1->num_edges, G1->num_edges);
+  printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, edges aligned: %d / %d @@@\n",
+  t, i, (double)A->score / (double)G1->num_edges, A->score, G1->num_edges);
+}
+
+void print_node(int node, bool stop) {
+  printf("node %hu (%s) has %u edges with a coverage of %u:\n", node, G1->id2name[node], G1->num_outgoing[node], edge_coverage(node));
+  for (size_t i = 0; i < G1->num_outgoing[node]; i++)
+    printf("\\_>%d (%s)\n", G1->outgoing_edges[node][i], G1->id2name[G1->outgoing_edges[node][i]]);
+  printf("\n\n");
+  if (stop)
+    getchar();
 }
 
 #endif

@@ -3,14 +3,14 @@
 
 void create_adj(struct Adjacency * adj, struct Graph * graph) {
   adj->dim = graph->num_nodes;
-  adj->matrix = malloc(adj->dim * sizeof(int*));
+  adj->matrix = malloc(adj->dim * sizeof(unsigned int*));
   for (size_t i = 0; i < adj->dim; i++) {
-    adj->matrix[i] = malloc(adj->dim * sizeof(int));
-    memset(adj->matrix[i], 0, adj->dim * sizeof(int));
+    adj->matrix[i] = malloc(adj->dim * sizeof(unsigned int));
+    memset(adj->matrix[i], 0, adj->dim * sizeof(unsigned int));
   }
   for (size_t i = 0; i < graph->num_nodes; i++)
     for (size_t j = 0; j < graph->num_outgoing[i]; j++)
-      adj->matrix[i][graph->edges[i][j]] = 1;
+      adj->matrix[i][graph->outgoing_edges[i][j]] = 1;
 }
 
 int create_graph(char * filename, struct Graph * graph) {
@@ -24,7 +24,7 @@ int create_graph(char * filename, struct Graph * graph) {
   graph->num_nodes = 0;
   for (size_t i = 0; i < 5; i++)
     getline(&line, &len, handle);
-  sscanf(line, "%u", &graph->num_nodes);
+  sscanf(line, "%hu", &graph->num_nodes);
   graph->id2name = malloc(graph->num_nodes * sizeof(char *));
   for (size_t i = 0; i < graph->num_nodes; i++) {
     /* parse node */
@@ -37,19 +37,25 @@ int create_graph(char * filename, struct Graph * graph) {
   /* get number of edges */
   getline(&line, &len, handle);
   sscanf(line, "%u", &graph->num_edges);
-  graph->edges = malloc(graph->num_nodes * sizeof(short int *));
-  graph->num_outgoing = malloc(graph->num_nodes * sizeof(short int *));
-  memset(graph->num_outgoing, 0, graph->num_nodes * sizeof(short int *));
+  graph->outgoing_edges = malloc(graph->num_nodes * sizeof(short int *));
+  graph->incoming_edges = malloc(graph->num_nodes * sizeof(short int *));
+  graph->num_outgoing = malloc(graph->num_nodes * sizeof(unsigned int *));
+  graph->num_incoming = malloc(graph->num_nodes * sizeof(unsigned int *));
+  memset(graph->num_outgoing, 0, graph->num_nodes * sizeof(unsigned int *));
+  memset(graph->num_incoming, 0, graph->num_nodes * sizeof(unsigned int *));
   for (size_t i = 0; i < graph->num_nodes; i++)
-    graph->edges[i] = malloc(0);
-  for (short int i = 0; i < graph->num_edges; i++) {
+    graph->outgoing_edges[i] = malloc(0);
+  for (size_t i = 0; i < graph->num_edges; i++) {
     /* parse edge */
     getline(&line, &len, handle);
     short int tail, head;
     sscanf(line, "%hu %hu", &tail, &head);
-    size_t new_size = ++graph->num_outgoing[tail - 1] * sizeof(short int);
-    graph->edges[tail - 1] = realloc(graph->edges[tail - 1], new_size);
-    graph->edges[tail - 1][graph->num_outgoing[tail - 1] - 1] = head;
+    size_t tail_size = ++graph->num_outgoing[--tail] * sizeof(short int);
+    size_t head_size = ++graph->num_incoming[--head] * sizeof(short int);
+    graph->outgoing_edges[tail] = realloc(graph->outgoing_edges[tail], tail_size);
+    graph->incoming_edges[head] = realloc(graph->incoming_edges[head], head_size);
+    graph->outgoing_edges[tail][graph->num_outgoing[tail] - 1] = head;
+    graph->incoming_edges[head][graph->num_incoming[head] - 1] = tail;
   }
   fclose(handle);
   if (line)
@@ -73,11 +79,11 @@ void create_alignment(char * files[]) {
   G1->translate = malloc(G1->num_nodes * sizeof(short int));
   G2->taken = malloc(G2->num_nodes * sizeof(short int));
   memset(G2->taken, 0, G2->num_nodes * sizeof(short int));
-  for (short int i = 0; i < G1->num_nodes; i++)
+  for (size_t i = 0; i < G1->num_nodes; i++) {
     G1->translate[i] = i;
-  for (short int i = 0; i < G2->num_nodes; i++)
-    G2->taken[i] = 0;
-  A->score = full_edge_coverage(A);
+    G2->taken[i] = 1;
+  }
+  A->score = full_edge_coverage();
 }
 
 #endif
