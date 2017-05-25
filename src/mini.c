@@ -1,10 +1,7 @@
 #define _GNU_SOURCE
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
-#include <unistd.h>
 #include <signal.h>
 #include "topology.h"
 #include "sequence.h"
