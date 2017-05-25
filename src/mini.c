@@ -6,8 +6,8 @@
 #include <math.h>
 #include <unistd.h>
 #include <signal.h>
-#include "structures.h"
 #include "topology.h"
+#include "sequence.h"
 #include "create.h"
 #include "destroy.h"
 #include "print.h"
