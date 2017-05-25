@@ -20,4 +20,13 @@ void print_status(double t, int i) {
   t, i, (double)A->score / (double)G1->num_edges, A->score, G1->num_edges);
 }
 
+void print_node(int node, bool stop) {
+  printf("node %d (%s) has %d edges with a coverage of %d:\n", node, G1->id2name[node], G1->num_outgoing[node], edge_coverage(node));
+  for (size_t i = 0; i < G1->num_outgoing[node]; i++)
+    printf("\\_>%d (%s)\n", G1->outgoing_edges[node][i], G1->id2name[G1->outgoing_edges[node][i]]);
+  printf("\n\n");
+  if (stop)
+    getchar();
+}
+
 #endif

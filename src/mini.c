@@ -32,8 +32,6 @@ void move(int node1, int node2, int old) {
 }
 
 void swap(int node1, int node2) {
-  if (node1 == node2)
-    return;
   int temp = G1->translate[node1];
   G1->translate[node1] = G1->translate[node2];
   G1->translate[node2] = temp;
@@ -42,7 +40,6 @@ void swap(int node1, int node2) {
 void get_rand_neighbor(bool undo) {
   bool will_swap;
   int node1, node2, old;
-  char * tail, * head;
   if (undo) {
     will_swap = A->last_move[0];
     node1 = (will_swap ? A->last_move[2] : A->last_move[1]);

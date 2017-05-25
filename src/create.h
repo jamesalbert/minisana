@@ -10,7 +10,7 @@ void create_adj(struct Adjacency * adj, struct Graph * graph) {
   }
   for (size_t i = 0; i < graph->num_nodes; i++)
     for (size_t j = 0; j < graph->num_outgoing[i]; j++)
-      adj->matrix[i][graph->edges[i][j]] = 1;
+      adj->matrix[i][graph->outgoing_edges[i][j]] = 1;
 }
 
 int create_graph(char * filename, struct Graph * graph) {
@@ -37,19 +37,25 @@ int create_graph(char * filename, struct Graph * graph) {
   /* get number of edges */
   getline(&line, &len, handle);
   sscanf(line, "%d", &graph->num_edges);
-  graph->edges = malloc(graph->num_nodes * sizeof(int *));
+  graph->outgoing_edges = malloc(graph->num_nodes * sizeof(int *));
+  graph->incoming_edges = malloc(graph->num_nodes * sizeof(int *));
   graph->num_outgoing = malloc(graph->num_nodes * sizeof(int *));
+  graph->num_incoming = malloc(graph->num_nodes * sizeof(int *));
   memset(graph->num_outgoing, 0, graph->num_nodes * sizeof(int *));
+  memset(graph->num_incoming, 0, graph->num_nodes * sizeof(int *));
   for (size_t i = 0; i < graph->num_nodes; i++)
-    graph->edges[i] = malloc(0);
+    graph->outgoing_edges[i] = malloc(0);
   for (size_t i = 0; i < graph->num_edges; i++) {
     /* parse edge */
     getline(&line, &len, handle);
     int tail, head;
     sscanf(line, "%d %d", &tail, &head);
-    size_t new_size = ++graph->num_outgoing[--tail] * sizeof(int);
-    graph->edges[tail] = realloc(graph->edges[tail], new_size);
-    graph->edges[tail][graph->num_outgoing[tail] - 1] = --head;
+    size_t tail_size = ++graph->num_outgoing[--tail] * sizeof(int);
+    size_t head_size = ++graph->num_incoming[--head] * sizeof(int);
+    graph->outgoing_edges[tail] = realloc(graph->outgoing_edges[tail], tail_size);
+    graph->incoming_edges[head] = realloc(graph->incoming_edges[head], head_size);
+    graph->outgoing_edges[tail][graph->num_outgoing[tail] - 1] = head;
+    graph->incoming_edges[head][graph->num_incoming[head] - 1] = tail;
   }
   fclose(handle);
   if (line)

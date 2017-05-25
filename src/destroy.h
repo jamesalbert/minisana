@@ -10,10 +10,10 @@ void free_adj(struct Adjacency * adj) {
 
 void free_graph(struct Graph * G) {
   for (size_t i = 0; i < G->num_nodes; i++) {
-    free(G->edges[i]);
+    free(G->outgoing_edges[i]);
     free(G->id2name[i]);
   }
-  free(G->edges);
+  free(G->outgoing_edges);
   free(G->id2name);
 }
 
