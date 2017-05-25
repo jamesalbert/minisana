@@ -3,10 +3,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <signal.h>
-#include "topology.h"
-#include "sequence.h"
 #include "create.h"
 #include "destroy.h"
+#include "score.h"
 #include "print.h"
 
 #define TIME 10000000000
@@ -47,22 +46,23 @@ void get_rand_neighbor(bool undo) {
     node2 = rand() % (will_swap ? G1->num_nodes : G2->num_nodes);
   }
   old = G1->translate[node1];
-  A->score -= edge_coverage(node1);
+  subtract_score(node1);
   if (will_swap) {
-    A->score -= edge_coverage(node2);
+    subtract_score(node2);
     swap(node1, node2);
-    A->score += edge_coverage(node2);
+    add_score(node2);
   } else
     move(node1, node2, old);
-  A->score += edge_coverage(node1);
+  add_score(node1);
+  update_score();
   A->last_move[0] = will_swap;
   A->last_move[1] = node1;
   A->last_move[2] = node2;
   A->last_move[3] = old;
 }
 
-double probability(int prev_score, double t) {
-  return exp(-(A->score - (double)prev_score) / t);
+double probability(double prev_score, double t) {
+  return exp(-(A->score - prev_score) / t);
 }
 
 double temperature(double k) {
@@ -76,8 +76,7 @@ int main(int argc, char * argv[]) {
   signal(SIGINT, intHandler);
   A = malloc(sizeof(struct Alignment));
   create_alignment(argv);
-  double t, p;
-  int prev_score;
+  double t, p, prev_score;
   printf("\n");
   for (int i = 0; i < TIME; i++) {
     prev_score = A->score;

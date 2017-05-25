@@ -13,8 +13,7 @@ SRC =   src/mini.c \
   src/create.c \
   src/destroy.c \
   src/print.c \
-  src/topology.c \
-  src/sequence.c \
+  src/score.c \
 
 OBJDIR = _objs
 OBJS = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
@@ -22,13 +21,13 @@ MAIN = bin/mini
 
 all: $(MAIN)
 
-$(MAIN): $(OBJS)
+$(MAIN): clean $(OBJS)
 	@mkdir bin
-	$(CC) $(CXXFLAGS) -o $(MAIN) $(OBJS) $(LIBS)
+	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) -c -o $@ $< $(CXXFLAGS)
+	$(CC) -c -o $@ $< $(CXXFLAGS) $(OPTS)
 
 clean:
 	find . -type f | xargs touch
