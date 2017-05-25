@@ -39,7 +39,7 @@ void swap(int node1, int node2) {
 
 void get_rand_neighbor(bool undo) {
   bool will_swap;
-  int node1, node2, old;
+  short int node1, node2, old;
   if (undo) {
     will_swap = A->last_move[0];
     node1 = (will_swap ? A->last_move[2] : A->last_move[1]);
