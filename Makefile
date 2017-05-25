@@ -13,10 +13,8 @@ SRC = src/mini.c
 
 MAIN = bin/mini
 
-all:
-	rm -f bin/mini
+bin/mini: src/create.h src/destroy.h src/mini.c src/print.h src/structures.h src/topology.h
 	$(CC) $(CXXFLAGS) $(SRC) $(OPTS) $(LIBS) -o $(MAIN)
 
 clean:
-	find . -type f | xargs touch
-	rm -rf bin
+	rm -f bin/mini src/*.o
