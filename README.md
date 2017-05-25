@@ -6,9 +6,6 @@ mini Simulated Annealing Network Aligner
 ## Example
 
 ```sh
-vagrant up
-vagrant ssh
-cd minisana
 make
-./bin/mini input/yeast.gw input/human.gw
+./bin/mini input/yeast.gw input/human.gw input/yeast_human.bitscores
 ```

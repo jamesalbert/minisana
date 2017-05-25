@@ -131,9 +131,10 @@ void create_alignment(char * files[]) {
     G1->translate[i] = i;
     G2->taken[i] = 1;
   }
-  printf("reading sequences...\n\n");
+  printf("reading sequences...\n");
   create_sequence(files[3]);
-  A->topology_score = full_edge_coverage();
-  A->sequence_score = full_sequence_similarity();
+  full_edge_coverage();
+  full_sequence_similarity();
   update_score();
+  printf("\n\n");
 }

@@ -1,8 +1,7 @@
 #include "score.h"
 
-unsigned int edge_coverage(short int id) {
-  unsigned int score = 0,
-               translated_node,
+void edge_coverage(short int id, bool subtract) {
+  unsigned int translated_node,
                translated_head,
                translated_tail,
                head, tail;
@@ -10,48 +9,46 @@ unsigned int edge_coverage(short int id) {
   for (size_t i = 0; i < G1->num_outgoing[id]; i++) {
     head = G1->outgoing[id][i];
     translated_head = G1->translate[head];
-    if (A2->matrix[translated_node][translated_head] == 1)
-      ++score;
+    if (A2->matrix[translated_node][translated_head] == 1 ||
+        A2->matrix[translated_head][translated_node] == 1)
+      A->topology_score += (subtract ? -1 : 1);
   }
   for (size_t i = 0; i < G1->num_incoming[id]; i++) {
     tail = G1->incoming[id][i];
     translated_tail = G1->translate[tail];
-    if (A2->matrix[translated_tail][translated_node] == 1)
-      ++score;
+    if (A2->matrix[translated_tail][translated_node] == 1 ||
+        A2->matrix[translated_node][translated_tail] == 1)
+      A->topology_score += (subtract ? -1 : 1);
   }
-  return score;
 }
 
-unsigned int full_edge_coverage() {
-  unsigned int score = 0,
-               translated_node,
+void full_edge_coverage() {
+  unsigned int translated_node,
                translated_head,
                head;
+  A->topology_score = 0;
   for (size_t i = 0; i < G1->num_nodes; i++) {
     translated_node = G1->translate[i];
     for (size_t j = 0; j < G1->num_outgoing[i]; j++) {
       head = G1->outgoing[i][j];
       translated_head = G1->translate[head];
       if (A2->matrix[translated_node][translated_head] == 1)
-        ++score;
+        ++A->topology_score;
     }
   }
-  return score;
 }
 
-unsigned int sequence_similarity(short int id) {
+void sequence_similarity(short int id, bool subtract) {
   short int translated_node = G1->translate[id];
   if (G1->sequence_adj[id][translated_node] == 0)
-    return 0;
-  return G1->sequence[id][translated_node];
+    return;
+  A->sequence_score += (subtract ? -1 : 1) * G1->sequence[id][translated_node];
 }
 
-unsigned int full_sequence_similarity() {
-  unsigned int score = 0;
-  for (short int i = 0; i < G1->num_nodes; i++) {
-    score += sequence_similarity(i);
-  }
-  return score;
+void full_sequence_similarity() {
+  A->sequence_score = 0;
+  for (short int i = 0; i < G1->num_nodes; i++)
+    sequence_similarity(i, false);
 }
 
 void update_score() {
@@ -61,11 +58,11 @@ void update_score() {
 }
 
 void subtract_score(short int id) {
-  A->topology_score -= edge_coverage(id);
-  A->sequence_score -= sequence_similarity(id);
+  edge_coverage(id, true);
+  sequence_similarity(id, true);
 }
 
 void add_score(short int id) {
-  A->topology_score += edge_coverage(id);
-  A->sequence_score += sequence_similarity(id);
+  edge_coverage(id, false);
+  sequence_similarity(id, false);
 }
