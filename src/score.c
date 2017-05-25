@@ -61,10 +61,6 @@ void update_score() {
 }
 
 void subtract_score(short int id) {
-  if ((int)A->topology_score - (int)edge_coverage(id) < 0) {
-    printf("topo: %u, ec: %u\n", A->topology_score, edge_coverage(id));
-    getchar();
-  }
   A->topology_score -= edge_coverage(id);
   A->sequence_score -= sequence_similarity(id);
 }
