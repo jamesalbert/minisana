@@ -1,5 +1,5 @@
 # minisana
-mini Simulated Annealing Network Aligner
+Miniature Simulated Annealing Network Aligner
 
 ![](http://i.imgur.com/WSJi4Xm.png)
 
