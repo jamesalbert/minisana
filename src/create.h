@@ -31,12 +31,13 @@ struct Alignment {
   unsigned int topology_score;
   unsigned int sequence_score;
   double score;
+  double alpha;
   short int last_move[4];
 } * A;
 
 void create_adj(struct Adjacency *, struct Graph *);
 void create_graph(char *, struct Graph *);
 void create_sequence(char *);
-void create_alignment(char * files[]);
+void create_alignment(char * [], double);
 
 #endif

@@ -18,7 +18,7 @@ void create_graph(char * filename, struct Graph * graph) {
   /* file reading */
   FILE * handle = fopen(filename, "r");
   if (handle == NULL) {
-    perror("file error");
+    perror(filename);
     exit(EXIT_FAILURE);
   }
   for (size_t i = 0; i < 5; i++)
@@ -112,14 +112,15 @@ void create_sequence(char * filename) {
       free(line);
 }
 
-void create_alignment(char * files[]) {
+void create_alignment(char * files[], double alpha) {
   A1 = malloc(sizeof(struct Alignment));
   A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));
   G2 = malloc(sizeof(struct Graph));
+  A->alpha = alpha;
   printf("reading topology files...\n");
-  create_graph(files[1], G1);
-  create_graph(files[2], G2);
+  create_graph(files[0], G1);
+  create_graph(files[1], G2);
   if (G1->num_nodes > G2->num_nodes) {
     struct Graph * temp = G1;
     G1 = G2;
@@ -136,7 +137,7 @@ void create_alignment(char * files[]) {
     G2->taken[i] = 1;
   }
   printf("reading sequences...\n");
-  create_sequence(files[3]);
+  create_sequence(files[2]);
   full_edge_coverage();
   full_sequence_similarity();
   update_score();

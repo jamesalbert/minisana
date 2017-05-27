@@ -7,8 +7,9 @@
 #include "destroy.h"
 #include "score.h"
 #include "print.h"
+#include "opts.h"
 
-#define TIME 10000000000
+#define TIME 1000000000
 #define T_INITIAL 1
 #define T_DECAY 1000
 #define INTERVAL 1000000
@@ -74,8 +75,11 @@ int main(int argc, char * argv[]) {
    * Usage: ./mini <smaller network> <larger network>
   */
   signal(SIGINT, intHandler);
+  char * files[3];
+  double alpha;
+  parse_args(argc, argv, files, &alpha);
   A = malloc(sizeof(struct Alignment));
-  create_alignment(argv);
+  create_alignment(files, alpha);
   double t, p, prev_score;
   printf("\n");
   for (int i = 0; i < TIME; i++) {
