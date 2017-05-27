@@ -82,7 +82,11 @@ void create_sequence(char * filename) {
   char * last_node = malloc(20 * sizeof(char));
   strcpy(last_node, "NULL");
   short int id1 = -1, id2;
-  while (getline(&line, &len, handle) != -1) {
+  if (getline(&line, &len, handle) == -1) {
+    printf("invalid sequence file\n");
+    exit(EXIT_FAILURE);
+  }
+  do {
     char * name1 = strtok(line, "\t"),
          * name2 = strtok(NULL, "\t");
     if (strcmp(last_node, name1) != 0) {
@@ -101,7 +105,7 @@ void create_sequence(char * filename) {
     G1->sequence[id1][id2] = (int)(atof(score_str) * 10000);
     G1->sequence_map[id1][G1->num_sequences[id1]++] = id2;
     G1->sequence_adj[id1][id2] = 1;
-  }
+  } while (getline(&line, &len, handle) != -1);
   fclose(handle);
   free(last_node);
   if (line)

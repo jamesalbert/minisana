@@ -10,10 +10,3 @@ apt-get install -y automake libtool bison gdb ccache cmake doxygen exuberant-cta
 
 # make gcc-4.9 default
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
-
-git clone https://github.com/fragglet/c-algorithms
-cd c-algorithms
-./autogen.sh
-make
-make install
-echo 'export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"' >> /home/vagrant/.bashrc
