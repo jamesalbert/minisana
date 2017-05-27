@@ -26,3 +26,7 @@ make
 # or
 ./bin/mini -n input/yeast.gw -N input/human.gw -a 0.995
 ```
+
+## Planning
+
+Check out our [kanban board](https://github.com/jamesalbert/minisana/projects/1)
