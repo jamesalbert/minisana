@@ -15,6 +15,7 @@ SRC =   src/mini.c \
   src/print.c \
   src/score.c \
 	src/opts.c \
+	src/search.c \
 
 OBJDIR = _objs
 OBJS = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))

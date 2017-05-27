@@ -25,6 +25,8 @@ void create_graph(char * filename, struct Graph * graph) {
     getline(&line, &len, handle);
   sscanf(line, "%u", &graph->num_nodes);
   graph->id2name = malloc(graph->num_nodes * sizeof(char *));
+  graph->name2id = malloc(graph->num_nodes * sizeof(int));
+  memset(graph->name2id, (unsigned int)-1, graph->num_nodes * sizeof(int));
   for (size_t i = 0; i < graph->num_nodes; i++) {
     /* parse node */
     getline(&line, &len, handle);
@@ -32,6 +34,9 @@ void create_graph(char * filename, struct Graph * graph) {
     token = strtok(NULL, "}");
     graph->id2name[i] = malloc(strlen(token) * sizeof(char));
     strcpy(graph->id2name[i], token);
+    int hashed = hash(token);
+    while (graph->name2id[hashed++ % graph->num_nodes] != (unsigned int)-1);
+    graph->name2id[--hashed % graph->num_nodes] = i;
   }
   /* get number of edges */
   getline(&line, &len, handle);
@@ -62,8 +67,10 @@ void create_graph(char * filename, struct Graph * graph) {
 }
 
 void create_sequence(char * filename) {
-  char * line = NULL, * token;
+  char * line = NULL, * token, * last_node,
+       * score_str, * name1, * name2;
   size_t len = 0;
+  short int id1 = -1, id2;
   /* file reading */
   FILE * handle = fopen(filename, "r");
   if (handle == NULL) {
@@ -79,16 +86,14 @@ void create_sequence(char * filename) {
   }
   G1->num_sequences = malloc(G1->num_nodes * sizeof(unsigned int));
   memset(G1->num_sequences, 0, G1->num_nodes * sizeof(unsigned int));
-  char * last_node = malloc(20 * sizeof(char));
+  last_node = malloc(20 * sizeof(char));
   strcpy(last_node, "NULL");
-  short int id1 = -1, id2;
   if (getline(&line, &len, handle) == -1) {
     printf("invalid sequence file\n");
     exit(EXIT_FAILURE);
-  }
-  do {
-    char * name1 = strtok(line, "\t"),
-         * name2 = strtok(NULL, "\t");
+  } do {
+    name1 = strtok(line, "\t");
+    name2 = strtok(NULL, "\t");
     if (strcmp(last_node, name1) != 0) {
       strcpy(last_node, name1);
       G1->sequence[++id1] = malloc(
@@ -96,12 +101,10 @@ void create_sequence(char * filename) {
       G1->sequence_map[id1] = malloc(
         G2->num_nodes * sizeof(short int));
     }
-    for (size_t i = 0; i < G2->num_nodes; ++i)
-      if (strcmp(G2->id2name[i], name2) == 0) {
-        id2 = i;
-        break;
-      }
-    char * score_str = strtok(NULL, "\n");
+    int hashed = hash(name2);
+    while (strcmp(name2, G2->id2name[G2->name2id[hashed++ % G2->num_nodes]]) != 0);
+    id2 = G2->name2id[--hashed % G2->num_nodes];
+    score_str = strtok(NULL, "\n");
     G1->sequence[id1][id2] = (int)(atof(score_str) * 10000);
     G1->sequence_map[id1][G1->num_sequences[id1]++] = id2;
     G1->sequence_adj[id1][id2] = 1;

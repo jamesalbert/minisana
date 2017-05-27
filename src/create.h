@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "score.h"
+#include "search.h"
 
 struct Adjacency {
   short int ** matrix;
@@ -25,6 +26,7 @@ struct Graph {
   unsigned int num_edges;
   unsigned int num_nodes;
   char ** id2name;
+  short int * name2id;
 } * G1, * G2;
 
 struct Alignment {
