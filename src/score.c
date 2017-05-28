@@ -46,15 +46,15 @@ void sequence_similarity(short int id, bool subtract) {
 }
 
 void full_sequence_similarity() {
-  A->sequence_score = 0;
+  A->sequence_score = 0.0;
   for (short int i = 0; i < G1->num_nodes; i++)
     sequence_similarity(i, false);
 }
 
 void update_score() {
   double topo = (1.0-A->alpha)*(double)A->topology_score/G1->num_edges;
-  double seq = A->alpha*(double)A->sequence_score/10000;
-  A->score = topo/2 + seq/2;
+  double seq = A->alpha*A->sequence_score/G2->num_nodes;
+  A->score = topo + seq;
 }
 
 void subtract_score(short int id) {

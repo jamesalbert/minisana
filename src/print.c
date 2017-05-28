@@ -15,8 +15,8 @@ void print_mapping() {
 }
 
 void print_status(double t, int i) {
-  printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, sequence similarity: %u, edges aligned: %u / %u @@@\n",
-  t, i, A->score, A->sequence_score, A->topology_score, G1->num_edges);
+  printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, sequence similarity: %f / %d, edges aligned: %u / %u @@@\n",
+  t, i, A->score, A->sequence_score, G2->num_nodes, A->topology_score, G1->num_edges);
 }
 
 void print_node(short int node, bool stop) {
@@ -29,11 +29,13 @@ void print_node(short int node, bool stop) {
 }
 
 void print_sequences() {
+  double score = 0.0;
   for (short int i = 0; i < G1->num_nodes; i++) {
-    printf("%d (%s):\n", i, G1->id2name[i]);
-    for (int j = 0; j < G1->num_sequences[i]; j++) {
-      short int id = G1->sequence_map[i][j];
-      printf("\t\\_> %d (%s) => %d\n", id, G2->id2name[id], G1->sequence[i][id]);
+    if (G1->sequence[i] != NULL) {
+      short int ti = G1->translate[i];
+      printf("  %f\n+ %f = %f\n", score, G1->sequence[i][ti], score + G1->sequence[i][ti]);
+      score += G1->sequence[i][ti];
     }
   }
+  printf("with a total of %f\n", score);
 }

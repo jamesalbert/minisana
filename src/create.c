@@ -26,17 +26,14 @@ void read_num_nodes() {
 
 void read_nodes() {
   char * token;
-  for (size_t i = 0; i < File->graph->num_nodes; i++) {
+  for (short int id = 0; id < File->graph->num_nodes; id++) {
     getline(&File->line, &File->len, File->handle);
     token = strtok(File->line, "{");
     token = strtok(NULL, "}");
-    File->graph->id2name[i] = malloc(
+    File->graph->id2name[id] = malloc(
       strlen(token) * sizeof(char));
-    strcpy(File->graph->id2name[i], token);
-    int hashed = hash(token);
-    while (File->graph->name2id[
-      hashed++ % File->graph->num_nodes] != (unsigned int)-1);
-    File->graph->name2id[--hashed % File->graph->num_nodes] = i;
+    strcpy(File->graph->id2name[id], token);
+    associate_name(token, id, File->graph);
   }
 }
 
@@ -76,7 +73,7 @@ void read_edges() {
 }
 
 void init_lists() {
-  G1->sequence = malloc(G1->num_nodes * sizeof(int *));
+  G1->sequence = malloc(G1->num_nodes * sizeof(double *));
   G1->sequence_map = malloc(G1->num_nodes * sizeof(short int *));
   G1->sequence_adj = malloc(G1->num_nodes * sizeof(short int *));
   for (size_t i = 0; i < G1->num_nodes; i++) {
@@ -105,16 +102,15 @@ void read_sequences() {
     if (strcmp(last_node, name1) != 0) {
       strcpy(last_node, name1);
       G1->sequence[++id1] = malloc(
-        G2->num_nodes * sizeof(int));
+        G2->num_nodes * sizeof(double));
       G1->sequence_map[id1] = malloc(
         G2->num_nodes * sizeof(short int));
+      memset(G1->sequence[id1], 0.0, G2->num_nodes * sizeof(double));
+      memset(G1->sequence_map[id1], -1, G2->num_nodes * sizeof(short int));
     }
-    int hashed = hash(name2);
-    while (strcmp(
-      name2, G2->id2name[G2->name2id[hashed++ % G2->num_nodes]]) != 0);
-    id2 = G2->name2id[--hashed % G2->num_nodes];
+    id2 = name2id(name2, G2);
     char * score_str = strtok(NULL, "\n");
-    G1->sequence[id1][id2] = (int)(atof(score_str) * 10000);
+    G1->sequence[id1][id2] = atof(score_str);
     G1->sequence_map[id1][G1->num_sequences[id1]++] = id2;
     G1->sequence_adj[id1][id2] = 1;
   } while (getline(&File->line, &File->len, File->handle) != -1);

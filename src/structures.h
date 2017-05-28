@@ -2,6 +2,7 @@
 #define STRUCTURES_H
 
 #include <stdio.h>
+#include "search.h"
 
 struct Adjacency {
   short int ** matrix;
@@ -11,8 +12,8 @@ struct Adjacency {
 struct Graph {
   short int * taken;
   short int * translate;
-  unsigned int ** sequence; // [tail_id][head_id] = score
-  short int ** sequence_map;
+  double ** sequence; // [tail_id][head_id] = score
+  short int ** sequence_map; // [tail_id][i] = head_id
   short int ** sequence_adj;
   short int ** outgoing; // [tail_id][0..num_outgoing] = head_id
   short int ** incoming;
@@ -27,7 +28,7 @@ struct Graph {
 
 struct Alignment {
   unsigned int topology_score;
-  unsigned int sequence_score;
+  double sequence_score;
   double score;
   double alpha;
   short int last_move[4];
@@ -39,5 +40,8 @@ struct ConfigFile {
   char * line;
   struct Graph * graph;
 } * File;
+
+short int name2id(char *, struct Graph *);
+void associate_name(char *, short int, struct Graph *);
 
 #endif

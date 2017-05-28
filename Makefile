@@ -1,8 +1,8 @@
 CC = gcc
 
 #CXXFLAGS = -Wall -fno-inline -O2 -std=c++11 -g
-CXXFLAGS = -std=c11 -O3 -fno-inline
-#CXXFLAGS = -std=c11
+#CXXFLAGS = -std=c11 -O3 -fno-inline
+CXXFLAGS = -std=c11
 # CXXFLAGS = -U__STRICT_ANSI__ -Wall -std=c++11 -O3 #-ggdb -static -Bstatic
 
 LIBS = -lm
@@ -17,6 +17,7 @@ SRC =   src/mini.c \
   src/opts.c \
   src/search.c \
   src/read.c \
+  src/structures.c \
 
 OBJDIR = _objs
 OBJS = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
