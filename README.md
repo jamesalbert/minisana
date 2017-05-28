@@ -1,7 +1,7 @@
 # minisana
 Miniature Simulated Annealing Network Aligner
 
-![](http://i.imgur.com/tSLzyQg.png)
+![](http://i.imgur.com/tSLzyQg.png){:height="75px" width="133px"}
 
 ## Usage
 
