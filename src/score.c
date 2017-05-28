@@ -6,14 +6,14 @@ void edge_coverage(short int id, bool subtract) {
                translated_tail,
                head, tail;
   translated_node = G1->translate[id];
-  for (size_t i = 0; i < G1->num_outgoing[id]; i++) {
+  for (size_t i = 0; i < G1->num_outgoing[id]; ++i) {
     head = G1->outgoing[id][i];
     translated_head = G1->translate[head];
     if (A2->matrix[translated_node][translated_head] == 1 ||
         A2->matrix[translated_head][translated_node] == 1)
       A->topology_score += (subtract ? -1 : 1);
   }
-  for (size_t i = 0; i < G1->num_incoming[id]; i++) {
+  for (size_t i = 0; i < G1->num_incoming[id]; ++i) {
     tail = G1->incoming[id][i];
     translated_tail = G1->translate[tail];
     if (A2->matrix[translated_tail][translated_node] == 1 ||
@@ -27,9 +27,9 @@ void full_edge_coverage() {
                translated_head,
                head;
   A->topology_score = 0;
-  for (size_t i = 0; i < G1->num_nodes; i++) {
+  for (size_t i = 0; i < G1->num_nodes; ++i) {
     translated_node = G1->translate[i];
-    for (size_t j = 0; j < G1->num_outgoing[i]; j++) {
+    for (size_t j = 0; j < G1->num_outgoing[i]; ++j) {
       head = G1->outgoing[i][j];
       translated_head = G1->translate[head];
       if (A2->matrix[translated_node][translated_head] == 1)
