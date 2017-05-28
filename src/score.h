@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include "create.h"
+#include "structures.h"
 
 void edge_coverage(short int, bool);
 void full_edge_coverage();

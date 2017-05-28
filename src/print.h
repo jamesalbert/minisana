@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include "create.h"
+#include "structures.h"
 
 void print_mapping();
 void print_status(double, int);

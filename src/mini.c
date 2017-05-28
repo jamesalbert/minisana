@@ -1,13 +1,14 @@
 #define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "create.h"
 #include "destroy.h"
-#include "score.h"
-#include "print.h"
 #include "opts.h"
+#include "print.h"
+#include "score.h"
+#include "structures.h"
 
 #define TIME 1000000000
 #define T_INITIAL 1
