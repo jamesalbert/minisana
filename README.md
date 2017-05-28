@@ -1,6 +1,9 @@
 # minisana
 Miniature Simulated Annealing Network Aligner
 
+![](https://img.shields.io/badge/style-24%20kb-green.svg?style=plastic&label=binary%20size)
+![](https://img.shields.io/badge/style-dope%20as%20shit-green.svg?style=plastic&label=cool%20level)
+
 <img src="http://i.imgur.com/tSLzyQg.png" width="550px">
 
 ## Usage
