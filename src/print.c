@@ -19,8 +19,8 @@ void print_status(double t, int i) {
   t, i, A->score, A->sequence_score, A->topology_score, G1->num_edges);
 }
 
-void print_node(int node, bool stop) {
-  // printf("node %hu (%s) has %u edges with a coverage of %u:\n", node, G1->id2name[node], G1->num_outgoing[node], edge_coverage(node));
+void print_node(short int node, bool stop) {
+  printf("node %hu (%s) has %u edges:\n", node, G1->id2name[node], G1->num_outgoing[node]);
   for (size_t i = 0; i < G1->num_outgoing[node]; i++)
     printf("\\_>%d (%s)\n", G1->outgoing[node][i], G1->id2name[G1->outgoing[node][i]]);
   printf("\n\n");

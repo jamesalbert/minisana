@@ -7,7 +7,7 @@
 
 void print_mapping();
 void print_status(double, int);
-void print_node(int, bool);
+void print_node(short int, bool);
 void print_sequences();
 
 #endif
