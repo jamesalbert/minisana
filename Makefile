@@ -26,12 +26,13 @@ MAIN = bin/mini
 all: $(MAIN)
 
 $(MAIN): $(OBJS)
-	-mkdir bin output
-	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
+	-mkdir bin output lib
+	$(CC) $(CXXFLAGS) $(LIBS) $(OPTS) -o $(MAIN) $(OBJS)
+	$(CC) -shared -o lib/libmini.so $(OBJS)
 
 $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
-	$(CC) -c -o $@ $< $(CXXFLAGS) $(OPTS)
+	$(CC) -c -fpic -o $@ $< $(CXXFLAGS) $(OPTS)
 
 docker:
 	docker build -t minisana .
@@ -47,4 +48,4 @@ docker_clean:
 
 clean: docker_clean
 	@find . -type f | xargs touch
-	-rm -rf bin output _objs
+	-rm -rf bin output _objs lib
