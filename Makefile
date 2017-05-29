@@ -27,8 +27,8 @@ all: $(MAIN)
 
 $(MAIN): $(OBJS)
 	-mkdir bin output lib
-	$(CC) $(CXXFLAGS) $(LIBS) $(OPTS) -o $(MAIN) $(OBJS)
-	$(CC) -shared -o lib/libmini.so $(OBJS)
+	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
+	$(CC) -shared -o lib/libmini.so $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
