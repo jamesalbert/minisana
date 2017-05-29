@@ -14,7 +14,7 @@ You can run minisana in Docker:
 MINIOPTS="-n input/yeast.gw -N input/human.gw -t 10000000" make docker_run
 ```
 
-Then you can check the output with `docker logs -f <container-id>`. Once it's finished, you can check the json file written to `~/output`.
+Then you can check the logs with `docker logs -f <container-id>`. Once it's finished, you can check the json file written to `~/output`.
 
 ## Usage
 
