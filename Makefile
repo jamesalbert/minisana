@@ -35,7 +35,8 @@ $(OBJDIR)/%.o: %.c
 	$(CC) -c -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
 
 test: $(MAIN)
-	gcc -Llib -Isrc -o tests/test_mini tests/test_mini.c -lcriterion -lmini
+	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini
+	LD_LIBRARY_PATH=lib ./tests/run_tests
 
 docker:
 	docker build -t minisana .
