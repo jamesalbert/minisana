@@ -34,6 +34,9 @@ $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
 	$(CC) -c -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
 
+test: $(MAIN)
+	gcc -Llib -Isrc -o tests/test_mini tests/test_mini.c -lcriterion -lmini
+
 docker:
 	docker build -t minisana .
 	-docker rmi -f $$(docker images --filter "dangling=true" -q)
