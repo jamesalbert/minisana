@@ -32,7 +32,7 @@ $(MAIN): $(OBJS)
 
 $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
-	$(CC) -c -fpic -o $@ $< $(CXXFLAGS) $(OPTS)
+	$(CC) -c -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
 
 docker:
 	docker build -t minisana .
