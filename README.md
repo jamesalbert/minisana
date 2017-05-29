@@ -6,6 +6,17 @@ Miniature Simulated Annealing Network Aligner
 
 <img src="http://i.imgur.com/tSLzyQg.png" width="550px">
 
+## Docker
+
+You can run minisana in Docker:
+
+```sh
+docker build -t minisana .
+docker run -dt minisana
+```
+
+Then you can check the output with `docker logs -f <container-id>`
+
 ## Usage
 
 ```sh

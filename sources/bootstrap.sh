@@ -4,7 +4,7 @@
 # which is synced to the host's $THIS_PROJECT'S_DIR/stoke
 if [ ! -d stoke ]
 then
-  git clone https://github.com/StanfordPL/stoke
+  git clone -b ubuntu16.04 https://github.com/StanfordPL/stoke
   cd stoke
   ./configure.sh
   make
