@@ -1,9 +1,9 @@
 FROM ubuntu:16.04
 
 RUN apt-get update
-RUN apt-get install -y git gcc make
+RUN apt-get install -y gcc make
 
-RUN git clone https://github.com/jamesalbert/minisana.git
+ADD . ./minisana
 RUN cd minisana && make
 
 CMD ["./minisana/bin/mini", \
