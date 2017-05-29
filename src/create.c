@@ -135,15 +135,14 @@ void create_sequence(char * filename) {
   read_file(filename, steps, 3, NULL);
 }
 
-void create_alignment(char * files[], double alpha) {
+void create_alignment(struct MiniMan * mm) {
   A1 = malloc(sizeof(struct Alignment));
   A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));
   G2 = malloc(sizeof(struct Graph));
-  A->alpha = alpha;
   printf("reading topology files...\n");
-  create_graph(files[0], G1);
-  create_graph(files[1], G2);
+  create_graph(mm->g1_file, G1);
+  create_graph(mm->g2_file, G2);
   if (G1->num_nodes > G2->num_nodes) {
     struct Graph * temp = G1;
     G1 = G2;
@@ -160,7 +159,7 @@ void create_alignment(char * files[], double alpha) {
     G2->taken[i] = 1;
   }
   printf("reading sequences...\n");
-  create_sequence(files[2]);
+  create_sequence(mm->seq_file);
   full_edge_coverage();
   full_sequence_similarity();
   update_score();

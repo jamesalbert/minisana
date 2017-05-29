@@ -30,7 +30,6 @@ struct Alignment {
   unsigned int topology_score;
   double sequence_score;
   double score;
-  double alpha;
   short int last_move[4];
 } * A;
 
@@ -40,6 +39,15 @@ struct ConfigFile {
   char * line;
   struct Graph * graph;
 } * File;
+
+struct MiniMan {
+  char * g1_file;
+  char * g2_file;
+  char * seq_file;
+  char * output_file;
+  double alpha;
+  int time;
+} * mm;
 
 short int name2id(char *, struct Graph *);
 void associate_name(char *, short int, struct Graph *);

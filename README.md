@@ -11,21 +11,22 @@ Miniature Simulated Annealing Network Aligner
 You can run minisana in Docker:
 
 ```sh
-docker build -t minisana .
-docker run -dt minisana
+MINIOPTS="-n input/yeast.gw -N input/human.gw -t 10000000" make docker_run
 ```
 
-Then you can check the output with `docker logs -f <container-id>`
+Then you can check the output with `docker logs -f <container-id>`. Once it's finished, you can check the json file written to `~/output`.
 
 ## Usage
 
 ```sh
-./bin/mini -n,-N [-s,-a]
+./bin/mini -n,-N [-s,-a,-o,-t]
 
   -n: path to the smaller network
   -N: path to the bigger network (small n, big N... get it?)
   -s: path to sequence file [defaults to "input/yeast_human.bitscores"]
   -a: alpha value [defaults to 0.5]
+  -o: file to output json [defaults to ./mini.out.json]
+  -t: amount of time to run simulation [defaults to 100,000,000 iterations]
 ```
 
 ## Example

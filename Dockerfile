@@ -4,9 +4,8 @@ RUN apt-get update
 RUN apt-get install -y gcc make
 
 ADD . ./minisana
-RUN cd minisana && make
+WORKDIR ./minisana
+RUN make
+RUN echo ${PWD}
 
-CMD ["./minisana/bin/mini", \
-     "-n", "./minisana/input/yeast.gw", \
-     "-N", "./minisana/input/human.gw", \
-     "-s", "./minisana/input/yeast_human.bitscores"]
+CMD ["sh", "-c", "./bin/mini ${MINIOPTS}"]

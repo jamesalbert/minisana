@@ -1,24 +1,32 @@
 #include "opts.h"
 
-int parse_args(int argc, char * argv[], char * files[], double * alpha) {
-  files[0] = NULL;
-  files[1] = NULL;
-  files[2] = NULL;
-  *alpha = 0.0;
+int parse_args(int argc, char * argv[], struct MiniMan * mm) {
+  mm->g1_file = NULL;
+  mm->g2_file = NULL;
+  mm->seq_file = "input/yeast_human.bitscores";
+  mm->output_file = "output/mini.out.json";
+  mm->alpha = 0.5;
+  mm->time = 100000000;
   char c;
-  while ((c = getopt (argc, argv, "n:N:s:a:")) != -1)
+  while ((c = getopt (argc, argv, "n:N:s:a:o:t:")) != -1)
     switch (c) {
       case 'n':
-        files[0] = optarg;
+        mm->g1_file = optarg;
         break;
       case 'N':
-        files[1] = optarg;
+        mm->g2_file = optarg;
         break;
       case 's':
-        files[2] = optarg;
+        mm->seq_file = optarg;
+        break;
+      case 'o':
+        mm->output_file = optarg;
         break;
       case 'a':
-        *alpha = atof(optarg);
+        mm->alpha = atof(optarg);
+        break;
+      case 't':
+        mm->time = atoi(optarg);
         break;
       case '?':
         if (optopt == 'n' || optopt == 'N')
@@ -34,13 +42,8 @@ int parse_args(int argc, char * argv[], char * files[], double * alpha) {
         abort ();
       }
   // check required opts
-  if (files[0] == NULL || files[1] == NULL) {
+  if (mm->g1_file == NULL || mm->g2_file == NULL) {
     fprintf(stderr, "Options -n,-N are required.\n");
     exit(EXIT_FAILURE);
   }
-  // define optional opts
-  if (files[2] == NULL)
-    files[2] = "input/yeast_human.bitscores";
-  if (*alpha == 0.0)
-    *alpha = 0.5;
 }

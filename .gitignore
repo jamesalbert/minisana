@@ -4,3 +4,5 @@ bin
 _objs
 mini.out.json
 dev
+output
+visual

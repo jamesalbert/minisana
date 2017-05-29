@@ -25,14 +25,26 @@ MAIN = bin/mini
 
 all: $(MAIN)
 
-$(MAIN): clean $(OBJS)
-	@mkdir bin
+$(MAIN): $(OBJS)
+	-mkdir bin output
 	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o: %.c
-	@mkdir -p $(dir $@)
+	-mkdir -p $(dir $@)
 	$(CC) -c -o $@ $< $(CXXFLAGS) $(OPTS)
 
-clean:
-	find . -type f | xargs touch
-	rm -rf bin _objs
+docker:
+	docker build -t minisana .
+	-docker rmi -f $$(docker images --filter "dangling=true" -q)
+
+docker_run: docker
+	-mkdir output
+	docker run -v $(PWD)/output:/minisana/output -e "MINIOPTS=$(MINIOPTS)" -dt minisana
+
+docker_clean:
+	-docker stop $$(docker ps -q --filter ancestor=minisana )
+	-docker rmi -f minisana
+
+clean: docker_clean
+	@find . -type f | xargs touch
+	-rm -rf bin output _objs

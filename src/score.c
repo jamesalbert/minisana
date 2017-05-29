@@ -52,8 +52,8 @@ void full_sequence_similarity() {
 }
 
 void update_score() {
-  double topo = (1.0-A->alpha)*(double)A->topology_score/G1->num_edges;
-  double seq = A->alpha*A->sequence_score/G2->num_nodes;
+  double topo = (1.0-mm->alpha)*(double)A->topology_score/G1->num_edges;
+  double seq = mm->alpha*A->sequence_score/G2->num_nodes;
   A->score = topo + seq;
 }
 

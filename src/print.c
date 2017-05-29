@@ -1,7 +1,7 @@
 #include "print.h"
 
 void print_mapping() {
-  FILE * json_file = fopen("mini.out.json", "w");
+  FILE * json_file = fopen(mm->output_file, "w");
   fprintf(json_file, "{\n");
   for (size_t i = 0; i < G1->num_nodes; i++) {
     char * name = G1->id2name[i],
