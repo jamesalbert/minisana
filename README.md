@@ -6,6 +6,10 @@ Miniature Simulated Annealing Network Aligner
 
 <img src="http://i.imgur.com/tSLzyQg.png" width="550px">
 
+## Tests
+
+Run tests with `make test`. Along with showing the test results, a coverage report will be generated as coverage/report.html. Open the report in your browser to see the total code coverage. `make docker` will also run the tests during image creation.
+
 ## Docker
 
 You can run minisana in Docker:
