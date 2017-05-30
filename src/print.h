@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include "structures.h"
 
-void print_mapping();
-void print_status(double, int);
+void print_mapping(struct MiniMan *);
+void print_status(struct Alignment *, double, int);
 void print_node(short int, bool);
 void print_sequences();
 

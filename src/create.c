@@ -135,7 +135,7 @@ void create_sequence(char * filename) {
   read_file(filename, steps, 3, NULL);
 }
 
-void create_alignment(struct MiniMan * mm) {
+void create_alignment(struct Alignment * A, struct MiniMan * mm) {
   A1 = malloc(sizeof(struct Alignment));
   A2 = malloc(sizeof(struct Alignment));
   G1 = malloc(sizeof(struct Graph));
@@ -160,8 +160,8 @@ void create_alignment(struct MiniMan * mm) {
   }
   printf("reading sequences...\n");
   create_sequence(mm->seq_file);
-  full_edge_coverage();
-  full_sequence_similarity();
-  update_score();
+  full_edge_coverage(A);
+  full_sequence_similarity(A);
+  update_score(A, mm);
   printf("\n\n");
 }

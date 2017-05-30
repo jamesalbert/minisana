@@ -20,6 +20,6 @@ void validate_file();
 void read_sequences();
 void create_graph(char *, struct Graph *);
 void create_sequence(char *);
-void create_alignment(struct MiniMan *);
+void create_alignment(struct Alignment *, struct MiniMan *);
 
 #endif

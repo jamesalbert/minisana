@@ -1,6 +1,6 @@
 #include "print.h"
 
-void print_mapping() {
+void print_mapping(struct MiniMan * mm) {
   FILE * json_file = fopen(mm->output_file, "w");
   fprintf(json_file, "{\n");
   for (size_t i = 0; i < G1->num_nodes; i++) {
@@ -14,7 +14,7 @@ void print_mapping() {
   fclose(json_file);
 }
 
-void print_status(double t, int i) {
+void print_status(struct Alignment * A, double t, int i) {
   printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, sequence similarity: %f / %d, edges aligned: %u / %u @@@\n",
   t, i, A->score, A->sequence_score, G2->num_nodes, A->topology_score, G1->num_edges);
 }

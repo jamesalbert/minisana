@@ -1,6 +1,6 @@
 #include "score.h"
 
-void edge_coverage(short int id, bool subtract) {
+void edge_coverage(struct Alignment * A, short int id, bool subtract) {
   unsigned int translated_node,
                translated_head,
                translated_tail,
@@ -22,7 +22,7 @@ void edge_coverage(short int id, bool subtract) {
   }
 }
 
-void full_edge_coverage() {
+void full_edge_coverage(struct Alignment * A) {
   unsigned int translated_node,
                translated_head,
                head;
@@ -38,31 +38,31 @@ void full_edge_coverage() {
   }
 }
 
-void sequence_similarity(short int id, bool subtract) {
+void sequence_similarity(struct Alignment * A, short int id, bool subtract) {
   short int translated_node = G1->translate[id];
   if (G1->sequence_adj[id][translated_node] == 0)
     return;
   A->sequence_score += (subtract ? -1 : 1) * G1->sequence[id][translated_node];
 }
 
-void full_sequence_similarity() {
+void full_sequence_similarity(struct Alignment * A) {
   A->sequence_score = 0.0;
   for (short int i = 0; i < G1->num_nodes; i++)
-    sequence_similarity(i, false);
+    sequence_similarity(A, i, false);
 }
 
-void update_score() {
+void update_score(struct Alignment * A, struct MiniMan * mm) {
   double topo = (1.0-mm->alpha)*(double)A->topology_score/G1->num_edges;
   double seq = mm->alpha*A->sequence_score/G2->num_nodes;
   A->score = topo + seq;
 }
 
-void subtract_score(short int id) {
-  edge_coverage(id, true);
-  sequence_similarity(id, true);
+void subtract_score(struct Alignment * A, short int id) {
+  edge_coverage(A, id, true);
+  sequence_similarity(A, id, true);
 }
 
-void add_score(short int id) {
-  edge_coverage(id, false);
-  sequence_similarity(id, false);
+void add_score(struct Alignment * A, short int id) {
+  edge_coverage(A, id, false);
+  sequence_similarity(A, id, false);
 }

@@ -16,7 +16,7 @@ void free_graph(struct Graph * G) {
   free(G->id2name);
 }
 
-void free_everything() {
+void free_everything(struct Alignment * A) {
   free(A);
   free(G1->num_outgoing);
   free(G2->num_outgoing);

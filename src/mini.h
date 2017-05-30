@@ -16,7 +16,7 @@
 void intHandler(int);
 void move(int, int, int);
 void swap(int, int);
-void get_rand_neighbor(bool);
-double probability(double, double);
-double temperature(double);
+void get_rand_neighbor(struct Alignment *, struct MiniMan *, bool);
+double probability(struct Alignment *, double, double);
+double temperature(struct MiniMan *, double);
 int main(int argc, char * argv[]);

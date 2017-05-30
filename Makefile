@@ -28,7 +28,7 @@ all: $(MAIN)
 $(MAIN): $(OBJS)
 	-mkdir bin output lib
 	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
-	$(CC) -shared -o lib/libmini.so $(OBJS) $(LIBS)
+	$(CC) -ggdb -shared -o lib/libmini.so $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
@@ -36,7 +36,7 @@ $(OBJDIR)/%.o: %.c
 
 test: $(MAIN)
 	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini
-	LD_LIBRARY_PATH=lib ./tests/run_tests
+	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose
 
 docker:
 	docker build -t minisana .
@@ -52,4 +52,4 @@ docker_clean:
 
 clean: docker_clean
 	@find . -type f | xargs touch
-	-rm -rf bin output _objs lib
+	-rm -rf bin output _objs lib tests/run_tests

@@ -5,12 +5,12 @@
 #include <stdlib.h>
 #include "structures.h"
 
-void edge_coverage(short int, bool);
-void full_edge_coverage();
-void sequence_similarity(short int, bool);
-void full_sequence_similarity();
-void update_score();
-void subtract_score(short int);
-void add_score(short int);
+void edge_coverage(struct Alignment *, short int, bool);
+void full_edge_coverage(struct Alignment *);
+void sequence_similarity(struct Alignment *, short int, bool);
+void full_sequence_similarity(struct Alignment *);
+void update_score(struct Alignment *, struct MiniMan *);
+void subtract_score(struct Alignment *, short int);
+void add_score(struct Alignment *, short int);
 
 #endif

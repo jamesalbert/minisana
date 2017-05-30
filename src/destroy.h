@@ -6,6 +6,6 @@
 
 void free_adj(struct Adjacency *);
 void free_graph(struct Graph *);
-void free_everything();
+void free_everything(struct Alignment *);
 
 #endif
