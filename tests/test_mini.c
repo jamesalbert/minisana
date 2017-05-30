@@ -40,3 +40,11 @@ Test(mini, test_mini_temperature, .init = setup, .fini = teardown) {
     cr_assert(t == e, "unexpected temperature");
   }
 }
+
+Test(mini, test_mini_get_rand_neighbor, .init = setup, .fini = teardown) {
+  get_rand_neighbor(mm, false);
+}
+
+Test(mini, test_mini_move, .init = setup, .fini = teardown) {
+  move(mm, 0, 1, 0);
+}
