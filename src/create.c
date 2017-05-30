@@ -158,7 +158,6 @@ void create_sequence(MiniMan_t * mm) {
 }
 
 void create_alignment(MiniMan_t * mm) {
-  printf("reading topology files...\n");
   create_graph(mm->g1_file, mm->G1);
   create_graph(mm->g2_file, mm->G2);
   if (mm->G1->num_nodes > mm->G2->num_nodes) {
@@ -166,7 +165,6 @@ void create_alignment(MiniMan_t * mm) {
     mm->G1 = mm->G2;
     mm->G2 = temp;
   }
-  printf("creating adjacency matrices...\n");
   create_adj(mm->A1, mm->G1);
   create_adj(mm->A2, mm->G2);
   mm->G1->translate = malloc(mm->G1->num_nodes * sizeof(short int));
@@ -176,7 +174,6 @@ void create_alignment(MiniMan_t * mm) {
     mm->G1->translate[i] = i;
     mm->G2->taken[i] = 1;
   }
-  printf("reading sequences...\n");
   create_sequence(mm);
   full_edge_coverage(mm);
   full_sequence_similarity(mm);

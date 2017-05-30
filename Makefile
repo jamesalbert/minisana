@@ -1,7 +1,8 @@
 CC = gcc
 
 #CXXFLAGS = -Wall -fno-inline -O2 -std=c++11 -g
-CXXFLAGS = -std=c11 -O3 -fno-inline -fno-stack-protector
+#CXXFLAGS = -std=c11 -O3 -fno-inline -fno-stack-protector
+CXXFLAGS = -std=c11 -O0
 #CXXFLAGS = -std=c11
 # CXXFLAGS = -U__STRICT_ANSI__ -Wall -std=c++11 -O3 #-ggdb -static -Bstatic
 
@@ -27,19 +28,18 @@ all: $(MAIN)
 
 $(MAIN): $(OBJS)
 	-mkdir bin output lib
-	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
-	$(CC) -ggdb -shared -o lib/libmini.so $(OBJS) $(LIBS)
+	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS) -ftest-coverage -fprofile-arcs
+	$(CC) -ggdb -shared -o lib/libmini.so $(OBJS) $(LIBS) -ftest-coverage -fprofile-arcs
 
 $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
-	$(CC) -c -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
+	$(CC) -c -ftest-coverage -fprofile-arcs -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
 
 test: $(MAIN)
 	-mkdir coverage
-	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm -fprofile-arcs -ftest-coverage
-	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose
-	gcovr -r . --html -o coverage/report.html
-	rm -f *.gc*
+	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm
+	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose --xml=coverage/report.xml
+	gcovr -r . -d -p --html --html-details -o coverage/report.html
 	@echo \"open coverage/report.html\" to view coverage
 
 docker:

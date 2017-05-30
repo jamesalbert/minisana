@@ -59,8 +59,8 @@ double probability(MiniMan_t * mm, double prev_score, double t) {
   return exp(-(mm->A->score - prev_score) / t);
 }
 
-double temperature(MiniMan_t * mm, double k) {
-  return T_INITIAL * exp(-T_DECAY * (k / (double)mm->time));
+double temperature(MiniMan_t * mm, double i) {
+  return T_INITIAL * exp(-T_DECAY * (i / (double)mm->time));
 }
 
 int main(int argc, char * argv[]) {
