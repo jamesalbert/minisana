@@ -6,6 +6,15 @@ Miniature Simulated Annealing Network Aligner
 
 <img src="http://i.imgur.com/tSLzyQg.png" width="550px">
 
+## Install
+
+Running `make` will do a few things:
+
+  1. compile object files in `_objs`
+  2. build the binary `bin/mini`
+  3. build the shared library `lib/libmini.so`
+  4. create empty directories `output` where .json files will be stored
+
 ## Tests
 
 Run tests with `make test`. Along with showing the test results, a coverage report will be generated as coverage/report.html. Open the report in your browser to see the total code coverage. `make docker` will also run the tests during image creation.
