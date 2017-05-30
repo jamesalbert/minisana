@@ -4,7 +4,7 @@ RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
 RUN add-apt-repository ppa:snaipewastaken/ppa
 RUN apt-get update
-RUN apt-get install -y gcc make criterion-dev
+RUN apt-get install -y gcc make criterion-dev gcovr
 
 ADD . ./minisana
 WORKDIR ./minisana

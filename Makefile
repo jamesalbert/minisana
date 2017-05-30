@@ -35,8 +35,12 @@ $(OBJDIR)/%.o: %.c
 	$(CC) -c -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
 
 test: $(MAIN)
-	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini
+	-mkdir coverage
+	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm -fprofile-arcs -ftest-coverage
 	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose
+	gcovr -r . --html -o coverage/report.html
+	rm -f *.gc*
+	@echo \"open coverage/report.html\" to view coverage
 
 docker:
 	docker build -t minisana .
@@ -52,4 +56,4 @@ docker_clean:
 
 clean: docker_clean
 	@find . -type f | xargs touch
-	-rm -rf bin output _objs lib tests/run_tests
+	-rm -rf bin output _objs lib tests/run_tests coverage
