@@ -1,6 +1,6 @@
 #include "read.h"
 
-void read_file(char * filename, void (*steps[])(), int num_steps, struct Graph * graph) {
+void read_file(char * filename, void (*steps[])(), int num_steps, void * helper) {
   /* file reading */
   FILE * handle = fopen(filename, "r");
   if (handle == NULL) {
@@ -11,10 +11,9 @@ void read_file(char * filename, void (*steps[])(), int num_steps, struct Graph *
     .handle = handle,
     .len = 0,
     .line = NULL,
-    .graph = graph
   };
   for (size_t i = 0; i < num_steps; ++i)
-    steps[i]();
+    steps[i](helper);
   fclose(File->handle);
   if (File->line)
       free(File->line);

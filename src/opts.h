@@ -9,6 +9,6 @@
 
 #include "structures.h"
 
-int parse_args(int, char * [], struct MiniMan *);
+int parse_args(int, char * [], MiniMan_t *);
 
 #endif

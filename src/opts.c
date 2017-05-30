@@ -1,6 +1,6 @@
 #include "opts.h"
 
-int parse_args(int argc, char * argv[], struct MiniMan * mm) {
+int parse_args(int argc, char * argv[], MiniMan_t * mm) {
   mm->g1_file = NULL;
   mm->g2_file = NULL;
   mm->seq_file = "input/yeast_human.bitscores";

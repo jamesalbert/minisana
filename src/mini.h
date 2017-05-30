@@ -14,9 +14,9 @@
 #define INTERVAL 1000000
 
 void intHandler(int);
-void move(int, int, int);
-void swap(int, int);
-void get_rand_neighbor(struct Alignment *, struct MiniMan *, bool);
-double probability(struct Alignment *, double, double);
-double temperature(struct MiniMan *, double);
+void move(MiniMan_t *, int, int, int);
+void swap(MiniMan_t *, int, int);
+void get_rand_neighbor(MiniMan_t *, bool);
+double probability(MiniMan_t *, double, double);
+double temperature(MiniMan_t *, double);
 int main(int argc, char * argv[]);

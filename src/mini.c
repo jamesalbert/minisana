@@ -13,53 +13,53 @@
 #define T_DECAY 1000
 #define INTERVAL 1000000
 
-void move(int node1, int node2, int old) {
-  if (G2->taken[node2] == 1)
+void move(MiniMan_t * mm, int node1, int node2, int old) {
+  if (mm->G2->taken[node2] == 1)
     return;
-  G1->translate[node1] = node2;
-  G2->taken[node2] = 1;
-  G2->taken[old] = 0;
+  mm->G1->translate[node1] = node2;
+  mm->G2->taken[node2] = 1;
+  mm->G2->taken[old] = 0;
 }
 
-void swap(int node1, int node2) {
-  int temp = G1->translate[node1];
-  G1->translate[node1] = G1->translate[node2];
-  G1->translate[node2] = temp;
+void swap(MiniMan_t * mm, int node1, int node2) {
+  int temp = mm->G1->translate[node1];
+  mm->G1->translate[node1] = mm->G1->translate[node2];
+  mm->G1->translate[node2] = temp;
 }
 
-void get_rand_neighbor(struct Alignment * A, struct MiniMan * mm, bool undo) {
+void get_rand_neighbor(MiniMan_t * mm, bool undo) {
   bool will_swap;
   short int node1, node2, old;
   if (undo) {
-    will_swap = A->last_move[0];
-    node1 = (will_swap ? A->last_move[2] : A->last_move[1]);
-    node2 = (will_swap ? A->last_move[1] : A->last_move[3]);
+    will_swap = mm->A->last_move[0];
+    node1 = (will_swap ? mm->A->last_move[2] : mm->A->last_move[1]);
+    node2 = (will_swap ? mm->A->last_move[1] : mm->A->last_move[3]);
   } else {
     will_swap = rand() & 1;
-    node1 = rand() % G1->num_nodes;
-    node2 = rand() % (will_swap ? G1->num_nodes : G2->num_nodes);
+    node1 = rand() % mm->G1->num_nodes;
+    node2 = rand() % (will_swap ? mm->G1->num_nodes : mm->G2->num_nodes);
   }
-  old = G1->translate[node1];
-  subtract_score(A, node1);
+  old = mm->G1->translate[node1];
+  subtract_score(mm, node1);
   if (will_swap) {
-    subtract_score(A, node2);
-    swap(node1, node2);
-    add_score(A, node2);
+    subtract_score(mm, node2);
+    swap(mm, node1, node2);
+    add_score(mm, node2);
   } else
-    move(node1, node2, old);
-  add_score(A, node1);
-  update_score(A, mm);
-  A->last_move[0] = will_swap;
-  A->last_move[1] = node1;
-  A->last_move[2] = node2;
-  A->last_move[3] = old;
+    move(mm, node1, node2, old);
+  add_score(mm, node1);
+  update_score(mm);
+  mm->A->last_move[0] = will_swap;
+  mm->A->last_move[1] = node1;
+  mm->A->last_move[2] = node2;
+  mm->A->last_move[3] = old;
 }
 
-double probability(struct Alignment * A, double prev_score, double t) {
-  return exp(-(A->score - prev_score) / t);
+double probability(MiniMan_t * mm, double prev_score, double t) {
+  return exp(-(mm->A->score - prev_score) / t);
 }
 
-double temperature(struct MiniMan * mm, double k) {
+double temperature(MiniMan_t * mm, double k) {
   return T_INITIAL * exp(-T_DECAY * (k / (double)mm->time));
 }
 
@@ -67,27 +67,25 @@ int main(int argc, char * argv[]) {
   /*
    * Usage: ./mini <smaller network> <larger network>
   */
-  struct MiniMan * mm;
-  struct Alignment * A;
-  mm = malloc(sizeof(struct MiniMan));
+  MiniMan_t * mm;
+  mm = new_miniman();
   parse_args(argc, argv, mm);
-  A = malloc(sizeof(struct Alignment));
-  create_alignment(A, mm);
+  create_alignment(mm);
   double t, p, prev_score;
   printf("\n");
   for (int i = 0; i < mm->time; i++) {
-    prev_score = A->score;
-    get_rand_neighbor(A, mm, false);
+    prev_score = mm->A->score;
+    get_rand_neighbor(mm, false);
     t = temperature(mm, i);
     if (i % INTERVAL == 0)
-      print_status(A, t, i);
-    p = probability(A, prev_score, t);
-    if (A->score - prev_score < 0)
+      print_status(mm, t, i);
+    p = probability(mm, prev_score, t);
+    if (mm->A->score - prev_score < 0)
       if ((rand() % 100) < p)
-        get_rand_neighbor(A, mm, true);
+        get_rand_neighbor(mm, true);
   }
   printf("\n");
   print_mapping(mm);
-  free_everything(A);
+  free_everything(mm);
   exit(EXIT_SUCCESS);
 }

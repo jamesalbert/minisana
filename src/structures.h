@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include "search.h"
 
-struct Adjacency {
+typedef struct {
   short int ** matrix;
   size_t dim;
-} * A1, * A2;
+} Adjacency_t;
 
-struct Graph {
+typedef struct {
   short int * taken;
   short int * translate;
   double ** sequence; // [tail_id][head_id] = score
@@ -24,32 +24,36 @@ struct Graph {
   unsigned int num_nodes;
   char ** id2name;
   short int * name2id;
-} * G1, * G2;
+} Graph_t;
 
-struct Alignment {
+typedef struct {
   unsigned int topology_score;
   double sequence_score;
   double score;
   short int last_move[4];
-};
+} Alignment_t;
 
 struct ConfigFile {
   FILE * handle;
   size_t len;
   char * line;
-  struct Graph * graph;
 } * File;
 
-struct MiniMan {
+typedef struct {
+  Alignment_t * A;
+  Adjacency_t * A1;
+  Adjacency_t * A2;
+  Graph_t * G1;
+  Graph_t * G2;
   char * g1_file;
   char * g2_file;
   char * seq_file;
   char * output_file;
   double alpha;
   int time;
-};
+} MiniMan_t;
 
-short int name2id(char *, struct Graph *);
-void associate_name(char *, short int, struct Graph *);
+short int name2id(char *, Graph_t *);
+void associate_name(char *, short int, Graph_t *);
 
 #endif
