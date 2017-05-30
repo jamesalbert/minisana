@@ -12,7 +12,7 @@ Run tests with `make test`. Along with showing the test results, a coverage repo
 
 ## Docker
 
-You can run minisana in Docker:
+You can build a minisana image with `make docker` or go straight to running it with:
 
 ```sh
 MINIOPTS="-n input/yeast.gw -N input/human.gw -t 10000000" make docker_run
