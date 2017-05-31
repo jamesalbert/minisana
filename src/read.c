@@ -1,11 +1,11 @@
 #include "read.h"
 
-void read_file(char * filename, void (*steps[])(), int num_steps, void * helper) {
+short int read_file(char * filename, void (*steps[])(), int num_steps, void * helper) {
   /* file reading */
   FILE * handle = fopen(filename, "r");
   if (handle == NULL) {
     perror(filename);
-    exit(EXIT_FAILURE);
+    return 1;
   }
   File = &(struct ConfigFile) {
     .handle = handle,
@@ -16,5 +16,6 @@ void read_file(char * filename, void (*steps[])(), int num_steps, void * helper)
     steps[i](helper);
   fclose(File->handle);
   if (File->line)
-      free(File->line);
+    free(File->line);
+  return 0;
 }

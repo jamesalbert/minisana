@@ -146,7 +146,8 @@ void create_graph(char * filename, Graph_t * graph) {
   steps[2] = read_nodes;
   steps[3] = read_num_edges;
   steps[4] = read_edges;
-  read_file(filename, steps, 5, graph);
+  if (read_file(filename, steps, 5, graph) == 1)
+    exit(EXIT_FAILURE);
 }
 
 void create_sequence(MiniMan_t * mm) {
@@ -154,7 +155,8 @@ void create_sequence(MiniMan_t * mm) {
   steps[0] = init_lists;
   steps[1] = validate_file;
   steps[2] = read_sequences;
-  read_file(mm->seq_file, steps, 3, mm);
+  if (read_file(mm->seq_file, steps, 3, mm) == 1)
+    exit(EXIT_FAILURE);
 }
 
 void create_alignment(MiniMan_t * mm) {

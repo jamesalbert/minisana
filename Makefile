@@ -38,8 +38,9 @@ $(OBJDIR)/%.o: %.c
 test: $(MAIN)
 	-mkdir coverage
 	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm
-	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose --xml=coverage/report.xml
-	gcovr -r . -d -p --html --html-details -o coverage/report.html
+	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose
+	gcovr -r . -p --html --html-details -o coverage/report.html
+	gcovr -r . --xml-pretty -o coverage/pretty-report.xml
 	@echo \"open coverage/report.html\" to view coverage
 
 docker:

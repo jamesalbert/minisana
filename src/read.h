@@ -5,6 +5,6 @@
 #include <stdlib.h>
 #include "structures.h"
 
-void read_file(char *, void (*[])(), int, void *);
+short int read_file(char *, void (*[])(), int, void *);
 
 #endif
