@@ -3,7 +3,7 @@ Miniature Simulated Annealing Network Aligner
 
 ![](https://img.shields.io/badge/style-24%20kb-green.svg?style=plastic&label=binary%20size)
 ![](https://img.shields.io/badge/style-dope%20as%20shit-green.svg?style=plastic&label=dope%20meter)
-![](https://img.shields.io/badge/style-75.4%-yellow.svg?style=plastic&label=coverage)
+![](https://img.shields.io/badge/style-75.4%25-yellow.svg?style=plastic&label=coverage)
 
 <img src="http://i.imgur.com/tSLzyQg.png" width="550px">
 
