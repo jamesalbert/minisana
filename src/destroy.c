@@ -1,10 +1,12 @@
 #include "destroy.h"
 
-void free_adj(Adjacency_t * adj) {
-  for (size_t i = 0; i < adj->dim; i++)
-    free(adj->matrix[i]);
-  free(adj->matrix);
-  free(adj);
+void free_adjs(MiniMan_t * mm) {
+  for (size_t i = 0; i < mm->G1->num_nodes; i++)
+    free(mm->adjmat1[i]);
+  for (size_t i = 0; i < mm->G2->num_nodes; i++)
+    free(mm->adjmat2[i]);
+  free(mm->adjmat1);
+  free(mm->adjmat2);
 }
 
 void free_graph(Graph_t * G) {
@@ -24,7 +26,6 @@ void free_everything(MiniMan_t * mm) {
   free(mm->G2->taken);
   free_graph(mm->G1);
   free_graph(mm->G2);
-  free_adj(mm->A1);
+  free_adjs(mm);
   free(mm);
-  // free_adj(A2);
 }

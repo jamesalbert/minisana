@@ -8,30 +8,38 @@ Alignment_t * new_alignment() {
   return malloc(sizeof(Alignment_t));
 }
 
-Adjacency_t * new_adjacency() {
-  return malloc(sizeof(Adjacency_t));
-}
-
 MiniMan_t * new_miniman() {
   MiniMan_t * mm = malloc(sizeof(MiniMan_t));
   mm->A = new_alignment();
-  mm->A1 = new_adjacency();
-  mm->A2 = new_adjacency();
   mm->G1 = new_graph();
   mm->G2 = new_graph();
   return mm;
 }
 
-void create_adj(Adjacency_t * adj, Graph_t * graph) {
-  adj->dim = graph->num_nodes;
-  adj->matrix = malloc(adj->dim * sizeof(unsigned int*));
-  for (size_t i = 0; i < adj->dim; i++) {
-    adj->matrix[i] = malloc(adj->dim * sizeof(unsigned int));
-    memset(adj->matrix[i], 0, adj->dim * sizeof(unsigned int));
+// void create_adj(Adjacency_t * adj, Graph_t * graph) {
+//   adj->dim = graph->num_nodes;
+//   adj->matrix = malloc(adj->dim * sizeof(unsigned int*));
+//   for (size_t i = 0; i < adj->dim; i++) {
+//     adj->matrix[i] = malloc(adj->dim * sizeof(unsigned int));
+//     memset(adj->matrix[i], 0, adj->dim * sizeof(unsigned int));
+//   }
+//   for (size_t i = 0; i < graph->num_nodes; i++)
+//     for (size_t j = 0; j < graph->num_outgoing[i]; j++)
+//       adj->matrix[i][graph->outgoing[i][j]] = 1;
+// }
+//
+
+short ** create_adj(Graph_t * graph) {
+  // adj->dim = graph->num_nodes;
+  short ** adj = malloc(graph->num_nodes * sizeof(short*));
+  for (size_t i = 0; i < graph->num_nodes; i++) {
+    adj[i] = malloc(graph->num_nodes * sizeof(short));
+    memset(adj[i], 0, graph->num_nodes * sizeof(short));
   }
   for (size_t i = 0; i < graph->num_nodes; i++)
     for (size_t j = 0; j < graph->num_outgoing[i]; j++)
-      adj->matrix[i][graph->outgoing[i][j]] = 1;
+      adj[i][graph->outgoing[i][j]] = 1;
+  return adj;
 }
 
 void ignore_header(Graph_t * graph) {
@@ -167,8 +175,10 @@ void create_alignment(MiniMan_t * mm) {
     mm->G1 = mm->G2;
     mm->G2 = temp;
   }
-  create_adj(mm->A1, mm->G1);
-  create_adj(mm->A2, mm->G2);
+  // create_adj(mm->A1, mm->G1);
+  // create_adj(mm->A2, mm->G2);
+  mm->adjmat1 = create_adj(mm->G1);
+  mm->adjmat2 = create_adj(mm->G2);
   mm->G1->translate = malloc(mm->G1->num_nodes * sizeof(short int));
   mm->G2->taken = malloc(mm->G2->num_nodes * sizeof(short int));
   memset(mm->G2->taken, 0, mm->G2->num_nodes * sizeof(short int));

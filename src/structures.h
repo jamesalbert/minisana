@@ -4,10 +4,6 @@
 #include <stdio.h>
 #include "search.h"
 
-typedef struct {
-  short int ** matrix;
-  size_t dim;
-} Adjacency_t;
 
 typedef struct {
   short int * taken;
@@ -27,9 +23,9 @@ typedef struct {
 } Graph_t;
 
 typedef struct {
-  unsigned int topology_score;
-  double sequence_score;
-  double score;
+  // unsigned int topology_score;
+  // double sequence_score;
+  // double score;
   short int last_move[4];
 } Alignment_t;
 
@@ -40,9 +36,12 @@ struct ConfigFile {
 } * File;
 
 typedef struct {
+  unsigned int topology_score;
+  double sequence_score;
+  double score;
   Alignment_t * A;
-  Adjacency_t * A1;
-  Adjacency_t * A2;
+  short ** adjmat1;
+  short ** adjmat2;
   Graph_t * G1;
   Graph_t * G2;
   char * g1_file;

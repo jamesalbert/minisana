@@ -23,9 +23,9 @@ void teardown(void) {
 
 Test(mini, test_mini_probability, .init = setup, .fini = teardown) {
   double p, t = 0.5;
-  for (double i = 0.0; i < mm->A->score; i += 0.0001) {
+  for (double i = 0.0; i < mm->score; i += 0.0001) {
     double p = probability(mm, i, t),
-           e = exp(-(mm->A->score - i) / t);
+           e = exp(-(mm->score - i) / t);
     cr_assert(0 <= p && p <= 1, "probability outside range [0, 1]");
     cr_assert(0 <= e && e <= 1, "probability outside range [0, 1]");
     cr_assert(p == e, "unexpected probability");

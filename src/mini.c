@@ -22,6 +22,8 @@ void move(MiniMan_t * mm, int node1, int node2, int old) {
 }
 
 void swap(MiniMan_t * mm, int node1, int node2) {
+  if (node1 == node2)
+    return;
   int temp = mm->G1->translate[node1];
   mm->G1->translate[node1] = mm->G1->translate[node2];
   mm->G1->translate[node2] = temp;
@@ -56,7 +58,7 @@ void get_rand_neighbor(MiniMan_t * mm, bool undo) {
 }
 
 double probability(MiniMan_t * mm, double prev_score, double t) {
-  return exp(-(mm->A->score - prev_score) / t);
+  return exp(-(mm->score - prev_score) / t);
 }
 
 double temperature(MiniMan_t * mm, double i) {
@@ -74,13 +76,13 @@ int main(int argc, char * argv[]) {
   double t, p, prev_score;
   printf("\n");
   for (int i = 0; i < mm->time; i++) {
-    prev_score = mm->A->score;
+    prev_score = mm->score;
     get_rand_neighbor(mm, false);
     t = temperature(mm, i);
     if (i % INTERVAL == 0)
       print_status(mm, t, i);
     p = probability(mm, prev_score, t);
-    if (mm->A->score - prev_score < 0)
+    if (mm->score - prev_score < 0)
       if ((rand() % 100) < p)
         get_rand_neighbor(mm, true);
   }

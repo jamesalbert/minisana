@@ -28,7 +28,7 @@ $(OBJDIR)/%.o: %.c
 
 test: CXXFLAGS=-std=c11 -O0 -ftest-coverage -fprofile-arcs
 test: OBJFLAGS=-ftest-coverage -fprofile-arcs -fPIC
-test: $(MAIN)
+test: clean $(MAIN)
 	-mkdir coverage
 	$(CC) -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm
 	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose

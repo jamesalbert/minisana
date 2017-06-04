@@ -16,7 +16,7 @@ void print_mapping(MiniMan_t * mm) {
 
 void print_status(MiniMan_t * mm, double t, int i) {
   printf("\033[A\r@@@ Generated at temp: %f, time: %d, score: %f, sequence similarity: %f / %d, edges aligned: %u / %u @@@\n",
-  t, i, mm->A->score, mm->A->sequence_score, mm->G2->num_nodes, mm->A->topology_score, mm->G1->num_edges);
+  t, i, mm->score, mm->sequence_score, mm->G2->num_nodes, mm->topology_score, mm->G1->num_edges);
 }
 
 void print_node(MiniMan_t * mm, short int node, bool stop) {

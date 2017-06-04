@@ -12,9 +12,8 @@
 
 Graph_t * new_graph();
 Alignment_t * new_alignment();
-Adjacency_t * new_adjacency();
 MiniMan_t * new_miniman();
-void create_adj(Adjacency_t *, Graph_t *);
+short ** create_adj(Graph_t *);
 void ignore_header(Graph_t *);
 void read_num_nodes(Graph_t *);
 void read_nodes(Graph_t *);

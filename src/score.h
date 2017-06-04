@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <math.h>
 #include "structures.h"
 
 void edge_coverage(MiniMan_t *, short int, bool);
