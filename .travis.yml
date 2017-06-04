@@ -1,4 +1,6 @@
 language: c
+compiler:
+  - gcc-4.9
 before_install:
   - sudo apt-get update
   - sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
