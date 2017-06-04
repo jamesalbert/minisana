@@ -1,15 +1,9 @@
 CC = gcc
-
-#CXXFLAGS = -Wall -fno-inline -O2 -std=c++11 -g
-#CXXFLAGS = -std=c11 -O3 -fno-inline -fno-stack-protector
-CXXFLAGS = -std=c11 -O0
-#CXXFLAGS = -std=c11
-# CXXFLAGS = -U__STRICT_ANSI__ -Wall -std=c++11 -O3 #-ggdb -static -Bstatic
-
+CXXFLAGS = -std=c11 -O3 -fno-inline -fno-stack-protector
+OBJDIR = _objs
+MAIN = bin/mini
 LIBS = -lm
-
 OPTS = -ggdb
-
 SRC =   src/mini.c \
   src/create.c \
   src/destroy.c \
@@ -18,26 +12,25 @@ SRC =   src/mini.c \
   src/opts.c \
   src/search.c \
   src/read.c \
-  src/structures.c \
-
-OBJDIR = _objs
+  src/structures.c
 OBJS = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
-MAIN = bin/mini
 
 all: $(MAIN)
 
 $(MAIN): $(OBJS)
 	-mkdir bin output lib
-	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS) -ftest-coverage -fprofile-arcs
-	$(CC) -ggdb -shared -o lib/libmini.so $(OBJS) $(LIBS) -ftest-coverage -fprofile-arcs
+	$(CC) $(CXXFLAGS) $(OPTS) -o $(MAIN) $(OBJS) $(LIBS)
+	$(CC) $(CXXFLAGS) $(OPTS) -shared -o lib/libmini.so $(OBJS) $(LIBS)
 
 $(OBJDIR)/%.o: %.c
 	-mkdir -p $(dir $@)
-	$(CC) -c -ftest-coverage -fprofile-arcs -fPIC -o $@ $< $(CXXFLAGS) $(OPTS)
+	$(CC) -c $(OBJFLAGS) -o $@ $< $(CXXFLAGS) $(OPTS)
 
+test: CXXFLAGS=-std=c11 -O0 -ftest-coverage -fprofile-arcs
+test: OBJFLAGS=-ftest-coverage -fprofile-arcs -fPIC
 test: $(MAIN)
 	-mkdir coverage
-	gcc -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm
+	$(CC) -Llib -Isrc -o tests/run_tests tests/test_mini.c -lcriterion -lmini -lm
 	LD_LIBRARY_PATH=lib ./tests/run_tests --verbose
 	gcovr -r . -p --html --html-details -o coverage/report.html
 	gcovr -r . --xml-pretty -o coverage/pretty-report.xml
