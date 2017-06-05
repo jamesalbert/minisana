@@ -1,5 +1,5 @@
 CC = gcc
-CXXFLAGS = -std=c11 -O3 -fno-inline -fno-stack-protector
+CXXFLAGS = -std=c11 -O3 -fno-inline -fno-stack-protector -fPIC
 OBJDIR = _objs
 MAIN = bin/mini
 LIBS = -lm
