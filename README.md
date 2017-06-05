@@ -1,9 +1,8 @@
 # minisana
 Miniature Simulated Annealing Network Aligner
 
-![](https://img.shields.io/badge/style-24%20kb-green.svg?style=plastic&label=binary%20size)
-![](https://travis-ci.org/jamesalbert/minisana.svg?branch=master)
-![](https://img.shields.io/badge/style-75.4%25-yellow.svg?style=plastic&label=coverage)
+[![Build Status](https://travis-ci.org/jamesalbert/minisana.svg?branch=master)](https://travis-ci.org/jamesalbert/minisana)
+[![Coverage Status](https://coveralls.io/repos/github/jamesalbert/minisana/badge.svg?branch=master)](https://coveralls.io/github/jamesalbert/minisana?branch=master)
 
 <img src="http://i.imgur.com/tSLzyQg.png" width="550px">
 
