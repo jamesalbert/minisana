@@ -3,7 +3,8 @@
 void print_mapping(MiniMan_t * mm) {
   FILE * json_file = fopen(mm->output_file, "w");
   fprintf(json_file, "{\n");
-  for (size_t i = 0; i < mm->G1->num_nodes; i++) {
+  size_t i;
+  for (i = 0; i < mm->G1->num_nodes; i++) {
     char * name = mm->G1->id2name[i],
          * aname = mm->G2->id2name[mm->G1->translate[i]];
     fprintf(json_file, "\t\"%s\": \"%s\"", name, aname);
@@ -21,7 +22,8 @@ void print_status(MiniMan_t * mm, double t, int i) {
 
 void print_node(MiniMan_t * mm, short int node, bool stop) {
   printf("node %hu (%s) has %u edges:\n", node, mm->G1->id2name[node], mm->G1->num_outgoing[node]);
-  for (size_t i = 0; i < mm->G1->num_outgoing[node]; i++)
+  size_t i;
+  for (i = 0; i < mm->G1->num_outgoing[node]; i++)
     printf("\\_>%d (%s)\n", mm->G1->outgoing[node][i], mm->G1->id2name[mm->G1->outgoing[node][i]]);
   printf("\n\n");
   if (stop)
@@ -30,9 +32,10 @@ void print_node(MiniMan_t * mm, short int node, bool stop) {
 
 void print_sequences(MiniMan_t * mm) {
   double score = 0.0;
-  for (short int i = 0; i < mm->G1->num_nodes; i++) {
+  short i;
+  for (i = 0; i < mm->G1->num_nodes; i++) {
     if (mm->G1->sequence[i] != NULL) {
-      short int ti = mm->G1->translate[i];
+      short ti = mm->G1->translate[i];
       printf("  %f\n+ %f = %f\n", score, mm->G1->sequence[i][ti], score + mm->G1->sequence[i][ti]);
       score += mm->G1->sequence[i][ti];
     }

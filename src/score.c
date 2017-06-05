@@ -8,7 +8,8 @@ void edge_coverage(MiniMan_t * mm, short int id, bool subtract) {
   translated_node = mm->G1->translate[id];
   unsigned int score = 0;
   unsigned int limit = fmax(mm->G1->num_outgoing[id], mm->G1->num_incoming[id]);
-  for (size_t i = 0; i < limit; ++i) {
+  size_t i;
+  for (i = 0; i < limit; ++i) {
     if (i < mm->G1->num_outgoing[id]) {
       head = mm->G1->outgoing[id][i];
       translated_head = mm->G1->translate[head];
@@ -28,13 +29,14 @@ void edge_coverage(MiniMan_t * mm, short int id, bool subtract) {
 }
 
 void full_edge_coverage(MiniMan_t * mm) {
+  size_t i, j;
   unsigned int translated_node,
                translated_head,
                head;
   mm->topology_score = 0;
-  for (size_t i = 0; i < mm->G1->num_nodes; ++i) {
+  for (i = 0; i < mm->G1->num_nodes; ++i) {
     translated_node = mm->G1->translate[i];
-    for (size_t j = 0; j < mm->G1->num_outgoing[i]; ++j) {
+    for (j = 0; j < mm->G1->num_outgoing[i]; ++j) {
       head = mm->G1->outgoing[i][j];
       translated_head = mm->G1->translate[head];
       if (mm->adjmat2[translated_node][translated_head] == 1)
@@ -44,15 +46,16 @@ void full_edge_coverage(MiniMan_t * mm) {
 }
 
 void sequence_similarity(MiniMan_t * mm, short int id, bool subtract) {
-  short int translated_node = mm->G1->translate[id];
+  short translated_node = mm->G1->translate[id];
   if (mm->G1->sequence_adj[id][translated_node] == 0)
     return;
   mm->sequence_score += (subtract ? -1 : 1) * mm->G1->sequence[id][translated_node];
 }
 
 void full_sequence_similarity(MiniMan_t * mm) {
+  short i;
   mm->sequence_score = 0.0;
-  for (short int i = 0; i < mm->G1->num_nodes; i++)
+  for (i = 0; i < mm->G1->num_nodes; i++)
     sequence_similarity(mm, i, false);
 }
 

@@ -73,9 +73,10 @@ int main(int argc, char * argv[]) {
   mm = new_miniman();
   parse_args(argc, argv, mm);
   create_alignment(mm);
+  int i;
   double t, p, prev_score;
   printf("\n");
-  for (int i = 0; i < mm->time; i++) {
+  for (i = 0; i < mm->time; i++) {
     prev_score = mm->score;
     get_rand_neighbor(mm, false);
     t = temperature(mm, i);

@@ -16,34 +16,23 @@ MiniMan_t * new_miniman() {
   return mm;
 }
 
-// void create_adj(Adjacency_t * adj, Graph_t * graph) {
-//   adj->dim = graph->num_nodes;
-//   adj->matrix = malloc(adj->dim * sizeof(unsigned int*));
-//   for (size_t i = 0; i < adj->dim; i++) {
-//     adj->matrix[i] = malloc(adj->dim * sizeof(unsigned int));
-//     memset(adj->matrix[i], 0, adj->dim * sizeof(unsigned int));
-//   }
-//   for (size_t i = 0; i < graph->num_nodes; i++)
-//     for (size_t j = 0; j < graph->num_outgoing[i]; j++)
-//       adj->matrix[i][graph->outgoing[i][j]] = 1;
-// }
-//
-
 short ** create_adj(Graph_t * graph) {
   // adj->dim = graph->num_nodes;
   short ** adj = malloc(graph->num_nodes * sizeof(short*));
-  for (size_t i = 0; i < graph->num_nodes; i++) {
+  size_t i, j;
+  for (i = 0; i < graph->num_nodes; i++) {
     adj[i] = malloc(graph->num_nodes * sizeof(short));
     memset(adj[i], 0, graph->num_nodes * sizeof(short));
   }
-  for (size_t i = 0; i < graph->num_nodes; i++)
-    for (size_t j = 0; j < graph->num_outgoing[i]; j++)
+  for (i = 0; i < graph->num_nodes; i++)
+    for (j = 0; j < graph->num_outgoing[i]; j++)
       adj[i][graph->outgoing[i][j]] = 1;
   return adj;
 }
 
 void ignore_header(Graph_t * graph) {
-  for (size_t i = 0; i < 5; i++)
+  size_t i;
+  for (i = 0; i < 5; i++)
     getline(&File->line, &File->len, File->handle);
 }
 
@@ -56,7 +45,8 @@ void read_num_nodes(Graph_t * graph) {
 
 void read_nodes(Graph_t * graph) {
   char * token;
-  for (short int id = 0; id < graph->num_nodes; id++) {
+  short id;
+  for (id = 0; id < graph->num_nodes; id++) {
     getline(&File->line, &File->len, File->handle);
     token = strtok(File->line, "{");
     token = strtok(NULL, "}");
@@ -82,12 +72,14 @@ void read_num_edges(Graph_t * graph) {
          graph->num_nodes * sizeof(unsigned int *));
   memset(graph->num_incoming, 0,
          graph->num_nodes * sizeof(unsigned int *));
-  for (size_t i = 0; i < graph->num_nodes; i++)
+  size_t i;
+  for (i = 0; i < graph->num_nodes; i++)
     graph->outgoing[i] = malloc(0);
 }
 
 void read_edges(Graph_t * graph) {
-  for (size_t i = 0; i < graph->num_edges; i++) {
+  size_t i;
+  for (i = 0; i < graph->num_edges; i++) {
     getline(&File->line, &File->len, File->handle);
     unsigned int tail, head;
     sscanf(File->line, "%u %u", &tail, &head);
@@ -106,7 +98,8 @@ void init_lists(MiniMan_t * mm) {
   mm->G1->sequence = malloc(mm->G1->num_nodes * sizeof(double *));
   mm->G1->sequence_map = malloc(mm->G1->num_nodes * sizeof(short int *));
   mm->G1->sequence_adj = malloc(mm->G1->num_nodes * sizeof(short int *));
-  for (size_t i = 0; i < mm->G1->num_nodes; i++) {
+  size_t i;
+  for (i = 0; i < mm->G1->num_nodes; i++) {
     mm->G1->sequence_adj[i] = malloc(mm->G2->num_nodes * sizeof(short int *));
     memset(mm->G1->sequence_adj[i], 0, mm->G2->num_nodes * sizeof(short int *));
   }
@@ -122,7 +115,7 @@ void validate_file(MiniMan_t * mm) {
 }
 
 void read_sequences(MiniMan_t * mm) {
-  short int id1 = -1, id2;
+  short id1 = -1, id2;
   char * last_node = malloc(20 * sizeof(char)),
        * name1, * name2;
   strcpy(last_node, "NULL");
@@ -182,7 +175,8 @@ void create_alignment(MiniMan_t * mm) {
   mm->G1->translate = malloc(mm->G1->num_nodes * sizeof(short int));
   mm->G2->taken = malloc(mm->G2->num_nodes * sizeof(short int));
   memset(mm->G2->taken, 0, mm->G2->num_nodes * sizeof(short int));
-  for (size_t i = 0; i < mm->G1->num_nodes; i++) {
+  size_t i;
+  for (i = 0; i < mm->G1->num_nodes; i++) {
     mm->G1->translate[i] = i;
     mm->G2->taken[i] = 1;
   }

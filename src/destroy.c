@@ -1,16 +1,18 @@
 #include "destroy.h"
 
 void free_adjs(MiniMan_t * mm) {
-  for (size_t i = 0; i < mm->G1->num_nodes; i++)
+  size_t i;
+  for (i = 0; i < mm->G1->num_nodes; i++)
     free(mm->adjmat1[i]);
-  for (size_t i = 0; i < mm->G2->num_nodes; i++)
+  for (i = 0; i < mm->G2->num_nodes; i++)
     free(mm->adjmat2[i]);
   free(mm->adjmat1);
   free(mm->adjmat2);
 }
 
 void free_graph(Graph_t * G) {
-  for (size_t i = 0; i < G->num_nodes; i++) {
+  size_t i;
+  for (i = 0; i < G->num_nodes; i++) {
     free(G->outgoing[i]);
     free(G->id2name[i]);
   }

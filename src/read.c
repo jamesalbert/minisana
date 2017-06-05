@@ -12,7 +12,8 @@ short int read_file(char * filename, void (*steps[])(), int num_steps, void * he
     .len = 0,
     .line = NULL,
   };
-  for (size_t i = 0; i < num_steps; ++i)
+  size_t i;
+  for (i = 0; i < num_steps; ++i)
     steps[i](helper);
   fclose(File->handle);
   if (File->line)
