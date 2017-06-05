@@ -7,5 +7,8 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install -y gcc-4.9 make criterion-dev
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60
-  - sudo -H pip install gcovr
+  - pip install gcovr
+  - pip install --user cpp-coveralls
 script: make && make test
+after_success:
+  - coveralls --include coverage/pretty-report.xml --gcov-options '\-lp'
