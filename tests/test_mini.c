@@ -3,6 +3,8 @@
 #include "structures.h"
 #include "create.h"
 #include "read.h"
+#include "print.h"
+#include "opts.h"
 
 MiniMan_t * mm;
 
@@ -73,4 +75,27 @@ Test(mini, test_mini_move_taken, .init = setup, .fini = teardown) {
 Test(mini, test_read_missing_file, .init = setup, .fini = teardown) {
   short int ret = read_file("dont.exist", NULL, 0, NULL);
   cr_assert(ret == 1, "expected missing file to fail");
+}
+
+Test(mini, test_print_mapping, .init = setup, .fini = teardown) {
+  print_mapping(mm);
+}
+
+Test(mini, test_print_status, .init = setup, .fini = teardown) {
+  print_status(mm, 0.666, 1000);
+}
+
+Test(mini, test_print_node, .init = setup, .fini = teardown) {
+  print_node(mm, 1, 0);
+}
+
+Test(mini, test_print_sequences, .init = setup, .fini = teardown) {
+  print_sequences(mm);
+}
+
+Test(mini, test_opts, .init = setup, .fini = teardown) {
+  char * args[] = {"./bin/mini", "-n", "input/yeast.gw", "-N", "input/human.gw",
+                   "-t", "1000000", "-s", "input/yeast_human.bitscores",
+                   "-a", "0.5", "-o", "output/mini.out.json"};
+  parse_args(13, args, mm);
 }
